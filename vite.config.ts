@@ -19,6 +19,8 @@ export default defineConfig({
         theme_color: "#FAF7F3",
         background_color: "#FAF7F3",
         display: "standalone",
+        start_url: "/",
+        id: "/",
         icons: [
           {
             src: "pwa-192x192.png",
@@ -38,7 +40,11 @@ export default defineConfig({
           },
         ],
       },
+      devOptions: {
+        enabled: true,
+      },
       workbox: {
+        disableDevLogs: true,
         globPatterns: ["**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}"],
         runtimeCaching: [
           {

@@ -2,13 +2,15 @@
 import { ref, onMounted } from "vue";
 import { supabase } from "../supabaseClient";
 import { useRouter } from "vue-router";
-import { usePosStore, Produk } from "../stores/posStore";
+import { usePosStore, type Produk } from "../stores/posStore";
 import { useImageUpload } from "../composables/useImageUpload";
 import { swalError, swalConfirm, swalSuccess } from "../composables/useSwal";
+import { usePwaInstall } from "../composables/usePwaInstall";
 
 const router = useRouter();
 const posStore = usePosStore();
 const { uploadImage, isUploading, uploadError } = useImageUpload();
+const { isInstallable, installApp } = usePwaInstall();
 
 const products = ref<Produk[]>([]);
 const loading = ref(false);
@@ -70,13 +72,16 @@ const saveProduct = async () => {
     selectedFile.value = null;
     newProduct.value = { nama: "", harga: 0, foto_url: null };
     loadProducts();
-    } catch (err: any) {
+  } catch (err: any) {
     await swalError("Kesalahan", err.message);
   }
 };
 
 const deleteProduct = async (id: string) => {
-  const ok = await swalConfirm("Hapus produk ini?", "Produk akan dihapus permanen.");
+  const ok = await swalConfirm(
+    "Hapus produk ini?",
+    "Produk akan dihapus permanen.",
+  );
   if (!ok) return;
   try {
     const { error } = await supabase.from("produk").delete().eq("id", id);
@@ -106,7 +111,26 @@ onMounted(() => {
         <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
         <p class="text-gray-500 text-sm">Manage your products</p>
       </div>
-      <div class="flex gap-4">
+      <div class="flex gap-4 items-center">
+        <button
+          v-if="isInstallable"
+          @click="installApp"
+          class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition shadow flex items-center gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Install App
+        </button>
         <button
           @click="showModal = true"
           class="bg-primary text-white px-4 py-2 rounded-xl hover:bg-[#c99188] transition shadow"

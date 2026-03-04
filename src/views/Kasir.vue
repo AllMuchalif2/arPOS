@@ -2,10 +2,12 @@
 import { ref, onMounted, computed, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { supabase } from "../supabaseClient";
-import { usePosStore, Produk } from "../stores/posStore";
+import { usePosStore, type Produk } from "../stores/posStore";
+import { usePwaInstall } from "../composables/usePwaInstall";
 
 const router = useRouter();
 const posStore = usePosStore();
+const { isInstallable, installApp } = usePwaInstall();
 
 const cart = ref<{ product: Produk; qty: number }[]>([]);
 const customerName = ref("");
@@ -191,6 +193,26 @@ const logout = async () => {
             ></div>
             {{ posStore.isOnline ? "Online" : "Offline Mode" }}
           </div>
+
+          <button
+            v-if="isInstallable"
+            @click="installApp"
+            class="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl transition flex items-center gap-2 shadow-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Install App
+          </button>
 
           <button
             @click="router.push('/admin')"

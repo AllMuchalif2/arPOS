@@ -2,10 +2,12 @@
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { supabase } from "../supabaseClient";
+import { usePwaInstall } from "../composables/usePwaInstall";
 
 const route = useRoute();
 const idToko = route.query.toko as string;
 const idMeja = route.query.meja as string;
+const { isInstallable, installApp } = usePwaInstall();
 
 interface ProdukPelanggan {
   id: string;
@@ -159,21 +161,43 @@ onMounted(() => {
     <div v-else>
       <!-- Mobile Header -->
       <header
-        class="bg-white px-5 py-4 sticky top-0 z-30 shadow-sm flex items-center gap-3"
+        class="bg-white px-5 py-4 sticky top-0 z-30 shadow-sm flex items-center justify-between"
       >
-        <div
-          class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"
+          >
+            <i class="bx bx-restaurant text-xl"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-gray-800 leading-tight">
+              Cafe Digital Menu
+            </h1>
+            <p v-if="idMeja" class="text-xs text-gray-500 font-medium">
+              Meja {{ idMeja }}
+            </p>
+          </div>
+        </div>
+
+        <button
+          v-if="isInstallable"
+          @click="installApp"
+          class="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg flex items-center gap-1 shadow hover:bg-blue-700 transition"
         >
-          <i class="bx bx-restaurant text-xl"></i>
-        </div>
-        <div>
-          <h1 class="font-bold text-gray-800 leading-tight">
-            Cafe Digital Menu
-          </h1>
-          <p v-if="idMeja" class="text-xs text-gray-500 font-medium">
-            Meja {{ idMeja }}
-          </p>
-        </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Install
+        </button>
       </header>
 
       <!-- Welcome Banner -->
