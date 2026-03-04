@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { useSuperadminStore } from "../stores/superadminStore";
+import { swalError, swalConfirm, swalSuccess } from "./useSwal";
 
 export function useSuperAdminTokoManagement() {
   const adminStore = useSuperadminStore();
@@ -36,24 +37,28 @@ export function useSuperAdminTokoManagement() {
       
       if (modalMode.value === "create") {
         await adminStore.createToko(tokoName.value);
+        await swalSuccess("Toko dibuat", "Toko baru berhasil ditambahkan");
       } else {
         await adminStore.updateToko(editingId.value, tokoName.value);
+        await swalSuccess("Toko diubah", "Perubahan tersimpan");
       }
       
       closeModal();
       tokoName.value = "";
     } catch (error: any) {
-      alert("Kesalahan: " + error.message);
+      await swalError("Kesalahan", error.message);
     }
   };
 
   const delete_ = async (id: string) => {
-    if (!confirm("Hapus toko ini? Semua data akan dihapus.")) return;
-    
+    const ok = await swalConfirm("Hapus toko ini?", "Semua data toko akan dihapus.");
+    if (!ok) return;
+
     try {
       await adminStore.deleteToko(id);
+      await swalSuccess("Berhasil", "Toko dihapus");
     } catch (error: any) {
-      alert("Kesalahan: " + error.message);
+      await swalError("Kesalahan", error.message);
     }
   };
 

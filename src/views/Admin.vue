@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { useRouter } from "vue-router";
 import { usePosStore, Produk } from "../stores/posStore";
 import { useImageUpload } from "../composables/useImageUpload";
+import { swalError, swalConfirm, swalSuccess } from "../composables/useSwal";
 
 const router = useRouter();
 const posStore = usePosStore();
@@ -69,19 +70,21 @@ const saveProduct = async () => {
     selectedFile.value = null;
     newProduct.value = { nama: "", harga: 0, foto_url: null };
     loadProducts();
-  } catch (err: any) {
-    alert(err.message);
+    } catch (err: any) {
+    await swalError("Kesalahan", err.message);
   }
 };
 
 const deleteProduct = async (id: string) => {
-  if (!confirm("Hapus produk ini?")) return;
+  const ok = await swalConfirm("Hapus produk ini?", "Produk akan dihapus permanen.");
+  if (!ok) return;
   try {
     const { error } = await supabase.from("produk").delete().eq("id", id);
     if (error) throw error;
+    await swalSuccess("Berhasil", "Produk dihapus");
     loadProducts();
   } catch (err: any) {
-    alert(err.message);
+    await swalError("Kesalahan", err.message);
   }
 };
 

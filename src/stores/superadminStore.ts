@@ -29,6 +29,7 @@ export const useSuperadminStore = defineStore("superadmin", () => {
       const { data, error } = await supabase
         .from("toko")
         .select("*")
+        .is("deleted_at", null)
         .order("created_at", { ascending: false });
       if (error) throw error;
       toko.value = data || [];
@@ -56,6 +57,7 @@ export const useSuperadminStore = defineStore("superadmin", () => {
         `
         )
         .eq("role", "admin")
+        .is("deleted_at", null)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -106,12 +108,15 @@ export const useSuperadminStore = defineStore("superadmin", () => {
   // Delete toko (soft delete)
   const deleteToko = async (id: string) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("toko")
         .update({ deleted_at: new Date().toISOString() })
-        .eq("id", id);
+        .eq("id", id)
+        .select()
+        .single();
       if (error) throw error;
-      toko.value = toko.value.filter((t) => t.id !== id);
+      // Refresh list from server to ensure consistency
+      await fetchToko();
     } catch (error) {
       throw error;
     }
@@ -144,14 +149,16 @@ export const useSuperadminStore = defineStore("superadmin", () => {
   // Delete admin account (soft delete)
   const deleteAdminAccount = async (userId: string) => {
     try {
-      // Soft delete from user_profiles
-      const { error } = await supabase
+      // Soft delete from user_profiles and refresh
+      const { data, error } = await supabase
         .from("user_profiles")
         .update({ deleted_at: new Date().toISOString() })
         .eq("id", userId)
-        .eq("role", "admin");
+        .eq("role", "admin")
+        .select()
+        .single();
       if (error) throw error;
-      adminAccounts.value = adminAccounts.value.filter((a) => a.id !== userId);
+      await fetchAdminAccounts();
     } catch (error) {
       throw error;
     }

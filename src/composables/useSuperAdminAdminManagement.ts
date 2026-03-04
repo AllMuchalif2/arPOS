@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { useSuperadminStore } from "../stores/superadminStore";
+import { swalError, swalSuccess, swalConfirm } from "./useSwal";
 
 export interface AdminFormData {
   email: string;
@@ -87,21 +88,23 @@ export function useSuperAdminAdminManagement() {
       }
 
       closeModal();
-      alert("Admin berhasil dibuat!");
+      await swalSuccess("Admin dibuat", "Akun admin berhasil dibuat");
     } catch (error: any) {
-      alert("Kesalahan: " + (error.message || error));
+      await swalError("Kesalahan", (error.message || String(error)));
     } finally {
       isCreating.value = false;
     }
   };
 
   const delete_ = async (id: string) => {
-    if (!confirm("Hapus akun ini?")) return;
-    
+    const ok = await swalConfirm("Hapus admin ini?", "Akun admin akan dihapus (soft delete)");
+    if (!ok) return;
+
     try {
       await adminStore.deleteAdminAccount(id);
+      await swalSuccess("Berhasil", "Akun admin dihapus");
     } catch (error: any) {
-      alert("Kesalahan: " + error.message);
+      await swalError("Kesalahan", error.message);
     }
   };
 

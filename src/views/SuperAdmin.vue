@@ -38,11 +38,13 @@ onMounted(async () => {
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <!-- Header -->
     <header class="bg-white shadow sticky top-0 z-40">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center"
+      >
         <h1 class="text-3xl font-bold text-slate-900">Super Admin</h1>
         <button
           @click="logout"
-          class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+          class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition"
         >
           Logout
         </button>
@@ -57,8 +59,8 @@ onMounted(async () => {
           :class="[
             'py-4 px-2 font-medium border-b-2 transition',
             activeTab === 'dashboard'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-slate-600 hover:text-slate-900'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-slate-600 hover:text-slate-900',
           ]"
         >
           Dashboard
@@ -68,8 +70,8 @@ onMounted(async () => {
           :class="[
             'py-4 px-2 font-medium border-b-2 transition',
             activeTab === 'toko'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-slate-600 hover:text-slate-900'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-slate-600 hover:text-slate-900',
           ]"
         >
           Kelola Toko
@@ -79,8 +81,8 @@ onMounted(async () => {
           :class="[
             'py-4 px-2 font-medium border-b-2 transition',
             activeTab === 'admin'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-slate-600 hover:text-slate-900'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-slate-600 hover:text-slate-900',
           ]"
         >
           Admin Account
@@ -97,10 +99,7 @@ onMounted(async () => {
         @add-store="() => toko.openCreate()"
         @add-admin="() => admin.openCreate(adminStore.toko[0]?.id || '')"
       />
-      <TokoTab
-        v-if="activeTab === 'toko'"
-        :toko-list="adminStore.toko"
-      />
+      <TokoTab v-if="activeTab === 'toko'" :toko-list="adminStore.toko" />
       <AdminTab
         v-if="activeTab === 'admin'"
         :admin-list="adminStore.adminAccounts"
