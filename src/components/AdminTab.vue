@@ -6,7 +6,7 @@ const admin = useSuperAdminAdminManagement();
 
 const handleFormUpdate = (
   key: keyof typeof admin.form.value,
-  value: string
+  value: string,
 ) => {
   admin.form.value[key] = value;
 };
@@ -32,21 +32,32 @@ const handleDelete = async (id: string) => {
       <i class="bx bx-loader-alt bx-spin text-4xl text-primary"></i>
     </div>
 
-    <div v-else class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div
+      v-else
+      class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+    >
       <div v-if="admin.accounts.length > 0" class="overflow-x-auto">
         <table class="w-full">
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+              <th
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700"
+              >
                 Nama
               </th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+              <th
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700"
+              >
                 Toko
               </th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+              <th
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700"
+              >
                 Dibuat
               </th>
-              <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700">
+              <th
+                class="px-6 py-3 text-center text-sm font-semibold text-gray-700"
+              >
                 Aksi
               </th>
             </tr>
@@ -57,14 +68,26 @@ const handleDelete = async (id: string) => {
               :key="a.id"
               class="border-b border-gray-100 hover:bg-gray-50 transition"
             >
-              <td class="px-6 py-4 text-sm font-medium text-gray-800">
-                {{ a.nama }}
+              <td class="px-6 py-4">
+                <div class="text-sm font-medium text-gray-800">
+                  {{ a.nama }}
+                </div>
+                <div class="text-xs text-gray-500 mt-0.5">
+                  {{ a.email || "-" }}
+                </div>
               </td>
+
               <td class="px-6 py-4 text-sm text-gray-600">
                 {{ a.toko_nama }}
               </td>
               <td class="px-6 py-4 text-sm text-gray-600">
-                {{ new Date(a.created_at).toLocaleDateString("id-ID") }}
+                {{
+                  new Date(a.created_at).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                }}
               </td>
               <td class="px-6 py-4 text-center">
                 <button

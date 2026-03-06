@@ -148,7 +148,9 @@ export const usePosStore = defineStore("pos", () => {
           nama_pelanggan: order.nama_pelanggan,
           tipe_pesanan: order.tipe_pesanan,
           total_harga: order.total_harga,
-          status: "selesai", // Cashier processes instantly
+          status: "selesai", 
+          nomor_pesanan: `INV-${Date.now()}`, 
+          id_kasir: userData.user.id, 
         })
         .select()
         .single();

@@ -11,10 +11,10 @@ export interface AdminFormData {
 
 export function useSuperAdminAdminManagement() {
   const adminStore = useSuperadminStore();
-  
+
   const showModal = ref(false);
   const isCreating = ref(false);
-  
+
   const form = ref<AdminFormData>({
     email: "",
     password: "",
@@ -51,13 +51,19 @@ export function useSuperAdminAdminManagement() {
 
       if (!serviceRoleKey) {
         throw new Error(
-          "Service Role Key tidak ditemukan di .env.local. Hubungi administrator."
+          "Service Role Key tidak ditemukan di .env.local. Hubungi administrator.",
         );
       }
 
-      const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
+      const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+          detectSessionInUrl: false,
+        },
+      });
 
-      const { data: authData, error: authError } = 
+      const { data: authData, error: authError } =
         await supabaseAdmin.auth.admin.createUser({
           email: form.value.email,
           password: form.value.password,
@@ -70,14 +76,13 @@ export function useSuperAdminAdminManagement() {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const { supabase } = await import("../supabaseClient");
-      const linkResult = await supabase
-        .from("user_profiles")
-        .insert({
-          id: authData.user.id,
-          id_toko: form.value.tokoId,
-          role: "admin",
-          nama: form.value.nama,
-        });
+      const linkResult = await supabase.from("user_profiles").insert({
+        id: authData.user.id,
+        id_toko: form.value.tokoId,
+        role: "admin",
+        nama: form.value.nama,
+        email: form.value.email,
+      });
 
       if (linkResult.error) throw linkResult.error;
 
@@ -90,14 +95,17 @@ export function useSuperAdminAdminManagement() {
       closeModal();
       await swalSuccess("Admin dibuat", "Akun admin berhasil dibuat");
     } catch (error: any) {
-      await swalError("Kesalahan", (error.message || String(error)));
+      await swalError("Kesalahan", error.message || String(error));
     } finally {
       isCreating.value = false;
     }
   };
 
   const delete_ = async (id: string) => {
-    const ok = await swalConfirm("Hapus admin ini?", "Akun admin akan dihapus (soft delete)");
+    const ok = await swalConfirm(
+      "Hapus admin ini?",
+      "Akun admin akan dihapus (soft delete)",
+    );
     if (!ok) return;
 
     try {

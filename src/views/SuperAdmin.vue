@@ -1,39 +1,18 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "../stores/authStore";
-import { useSuperadminStore } from "../stores/superadminStore";
 import DashboardTab from "../components/DashboardTab.vue";
 import TokoTab from "../components/TokoTab.vue";
 import AdminTab from "../components/AdminTab.vue";
-import { useSuperAdminTokoManagement } from "../composables/useSuperAdminTokoManagement";
-import { useSuperAdminAdminManagement } from "../composables/useSuperAdminAdminManagement";
-import { usePwaInstall } from "../composables/usePwaInstall";
+import { useSuperAdminPresenter } from "../presenters/useSuperAdminPresenter";
 
-const auth = useAuthStore();
-const router = useRouter();
-const adminStore = useSuperadminStore();
-const toko = useSuperAdminTokoManagement();
-const admin = useSuperAdminAdminManagement();
-const { isInstallable, installApp } = usePwaInstall();
-
-const activeTab = ref<"dashboard" | "toko" | "admin">("dashboard");
-
-const logout = async () => {
-  await auth.logout();
-  router.push({ name: "Login" });
-};
-
-onMounted(async () => {
-  try {
-    await Promise.all([
-      adminStore.fetchToko(),
-      adminStore.fetchAdminAccounts(),
-    ]);
-  } catch (error) {
-    // silent
-  }
-});
+const {
+  adminStore,
+  toko,
+  admin,
+  isInstallable,
+  installApp,
+  activeTab,
+  logout,
+} = useSuperAdminPresenter();
 </script>
 
 <template>
@@ -120,7 +99,7 @@ onMounted(async () => {
         :toko-count="adminStore.toko.length"
         :admin-count="adminStore.adminAccounts.length"
         @add-store="() => toko.openCreate()"
-        @add-admin="() => admin.openCreate(adminStore.toko[0]?.id || '')"
+        @add-admin="() => admin.openModal()"
       />
       <TokoTab v-if="activeTab === 'toko'" :toko-list="adminStore.toko" />
       <AdminTab

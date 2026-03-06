@@ -13,6 +13,7 @@ export interface AdminAccount {
   id_toko: string;
   role: string;
   nama: string;
+  email?: string;
   created_at: string;
   toko_nama?: string;
 }
@@ -52,9 +53,10 @@ export const useSuperadminStore = defineStore("superadmin", () => {
           id_toko,
           role,
           nama,
+          email,
           created_at,
           toko:id_toko(nama_toko)
-        `
+        `,
         )
         .eq("role", "admin")
         .is("deleted_at", null)
@@ -128,17 +130,15 @@ export const useSuperadminStore = defineStore("superadmin", () => {
   const linkAdminToToko = async (
     userId: string,
     tokoId: string,
-    nama: string
+    nama: string,
   ) => {
     try {
-      const { error } = await supabase
-        .from("user_profiles")
-        .insert({
-          id: userId,
-          id_toko: tokoId,
-          role: "admin",
-          nama: nama,
-        });
+      const { error } = await supabase.from("user_profiles").insert({
+        id: userId,
+        id_toko: tokoId,
+        role: "admin",
+        nama: nama,
+      });
       if (error) throw error;
       await fetchAdminAccounts();
     } catch (error) {
@@ -150,7 +150,7 @@ export const useSuperadminStore = defineStore("superadmin", () => {
   const deleteAdminAccount = async (userId: string) => {
     try {
       // Soft delete from user_profiles and refresh
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("user_profiles")
         .update({ deleted_at: new Date().toISOString() })
         .eq("id", userId)
