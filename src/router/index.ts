@@ -8,9 +8,14 @@ const routes: Array<RouteRecordRaw> = [
     name: "Login",
     component: () => import("../views/Login.vue"),
   },
-  // kasir dashboard
   {
     path: "/",
+    name: "LandingPage",
+    component: () => import("../views/LandingPage.vue"),
+  },
+  // kasir dashboard
+  {
+    path: "/kasir",
     name: "Kasir",
     component: () => import("../views/Kasir.vue"),
     meta: { requiresAuth: true, roles: ["kasir"] },

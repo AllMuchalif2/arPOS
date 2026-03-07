@@ -2,6 +2,7 @@
 import DashboardTab from "../components/superAdmin/DashboardTab.vue";
 import TokoTab from "../components/superAdmin/TokoTab.vue";
 import AdminTab from "../components/superAdmin/AdminTab.vue";
+import TenantRegistrationTab from "../components/superAdmin/TenantRegistrationTab.vue";
 import { useSuperAdminPresenter } from "../presenters/useSuperAdminPresenter";
 
 const {
@@ -16,7 +17,7 @@ const {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+  <div class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
     <!-- Header -->
     <header class="bg-white shadow sticky top-0 z-40">
       <div
@@ -89,6 +90,17 @@ const {
         >
           Admin Account
         </button>
+        <button
+          @click="activeTab = 'pendaftar'"
+          :class="[
+            'py-4 px-2 font-medium border-b-2 transition',
+            activeTab === 'pendaftar'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-slate-600 hover:text-slate-900',
+          ]"
+        >
+          Pendaftar Baru
+        </button>
       </div>
     </div>
 
@@ -107,6 +119,7 @@ const {
         :admin-list="adminStore.adminAccounts"
         :toko-list="adminStore.toko"
       />
+      <TenantRegistrationTab v-if="activeTab === 'pendaftar'" />
     </div>
   </div>
 </template>

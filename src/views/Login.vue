@@ -6,18 +6,27 @@ const { email, password, loading, errorMsg, handleLogin } = useLoginPresenter();
 
 <template>
   <div
-    class="min-h-screen bg-base flex justify-center items-center p-4 font-sans"
+    class="min-h-screen bg-base flex justify-center items-center p-4 font-sans relative"
   >
+    <!-- Back to Home -->
+    <router-link
+      to="/"
+      class="absolute top-6 left-6 flex items-center gap-2 text-gray-500 hover:text-primary transition-colors font-medium bg-white px-4 py-2 rounded-full shadow-sm"
+    >
+      <i class="bx bx-left-arrow-alt text-xl"></i>
+      Kembali ke Beranda
+    </router-link>
+
     <div
       class="w-full max-w-md bg-white rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
     >
       <div class="text-center mb-8">
-        <div
-          class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4"
-        >
-          <i class="bx bx-coffee text-3xl"></i>
-        </div>
-        <h1 class="text-2xl font-bold text-gray-800">Welcome Back</h1>
+        <img
+          src="/arpos-logo.png"
+          alt="arPOS Logo"
+          class="w-16 h-16 rounded-lg mx-auto"
+        />
+        <h1 class="text-2xl font-bold text-gray-800">ar<span class="text-primary">POS</span></h1>
         <p class="text-sm text-gray-500 mt-2">Sign in to your POS Dashboard</p>
       </div>
 
@@ -64,20 +73,32 @@ const { email, password, loading, errorMsg, handleLogin } = useLoginPresenter();
 
         <div
           v-if="errorMsg"
-          class="p-3 rounded-lg bg-red-50 text-red-600 text-sm py-2"
+          class="p-3 rounded-lg bg-red-50 text-red-600 text-sm py-2 flex items-center gap-2"
         >
-          <i class="bx bx-error-circle align-middle mr-1"></i>
-          <span class="align-middle">{{ errorMsg }}</span>
+          <i class="bx bx-error-circle text-lg"></i>
+          <span>{{ errorMsg }}</span>
         </div>
 
         <button
           type="submit"
           :disabled="loading"
-          class="w-full bg-primary hover:bg-[#c99188] text-white font-medium py-3 rounded-xl transition-colors duration-200 flex justify-center items-center shadow-md shadow-primary/20"
+          class="w-full bg-primary hover:bg-[#c99188] text-white font-medium py-3 rounded-xl transition-colors duration-200 flex justify-center items-center shadow-md shadow-primary/20 mt-2"
         >
           <i v-if="loading" class="bx bx-loader-alt bx-spin text-xl mr-2"></i>
           {{ loading ? "Signing in..." : "Sign In" }}
         </button>
+
+        <p
+          class="text-center flex justify-center text-sm text-gray-500 mt-6 pt-4 border-t border-gray-100"
+        >
+          Belum punya toko?
+          <router-link
+            to="/#register"
+            class="text-primary font-semibold hover:underline ml-1"
+          >
+            Daftar di sini
+          </router-link>
+        </p>
       </form>
     </div>
   </div>

@@ -1,0 +1,214 @@
+<template>
+  <section
+    id="register"
+    class="py-20 lg:py-32 relative overflow-hidden bg-base"
+  >
+    <div
+      class="absolute inset-0 bg-primary transform -skew-y-3 origin-top-left -z-10 opacity-20"
+    ></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div
+        class="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-secondary"
+      >
+        <!-- Info Side -->
+        <div
+          class="bg-secondary bg-opacity-20 p-10 md:w-2/5 flex flex-col justify-center border-r border-secondary"
+        >
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">Daftar Sekarang</h3>
+          <p class="text-gray-600 mb-8">
+            Bergabunglah dengan arPOS dan mulai kelola cafe/resto Anda lebih
+            rapi.
+          </p>
+
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-5 h-5 text-primary mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+              <span class="text-sm text-gray-700">Akses semua modul kasir</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-5 h-5 text-primary mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+              <span class="text-sm text-gray-700">Manajemen multi-cabang</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="w-5 h-5 text-primary mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+              <span class="text-sm text-gray-700">Scan QR Menu Meja</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Form Side -->
+        <div class="p-10 md:w-3/5 bg-white">
+          <form @submit.prevent="submitRegistration" class="space-y-5">
+            <div
+              v-if="errorMsg"
+              class="p-4 bg-red-50 text-red-700 rounded-xl mb-4 text-sm font-medium border border-red-200"
+            >
+              {{ errorMsg }}
+            </div>
+            <div
+              v-if="successMsg"
+              class="p-4 bg-green-50 text-green-700 rounded-xl mb-4 text-sm font-medium border border-green-200"
+            >
+              {{ successMsg }}
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Nama Toko/Cafe</label
+              >
+              <input
+                type="text"
+                v-model="form.storeName"
+                required
+                placeholder="Kopi Senang"
+                class="w-full px-4 py-2.5 rounded-xl border border-secondary focus:ring-2 focus:ring-primary focus:border-primary transition-colors bg-base focus:bg-white"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Email Anda</label
+              >
+              <input
+                type="email"
+                v-model="form.email"
+                required
+                placeholder="owner@kopisenang.com"
+                class="w-full px-4 py-2.5 rounded-xl border border-secondary focus:ring-2 focus:ring-primary focus:border-primary transition-colors bg-base focus:bg-white"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Nomor WhatsApp</label
+              >
+              <input
+                type="tel"
+                v-model="form.phone"
+                required
+                placeholder="081234567890"
+                class="w-full px-4 py-2.5 rounded-xl border border-secondary focus:ring-2 focus:ring-primary focus:border-primary transition-colors bg-base focus:bg-white"
+              />
+            </div>
+
+            <button
+              type="submit"
+              :disabled="isSubmitting"
+              class="w-full bg-primary hover-bg-primary text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
+            >
+              <svg
+                v-if="isSubmitting"
+                class="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              {{ isSubmitting ? "Memproses..." : "Kirim Pendaftaran" }}
+            </button>
+            <p class="text-xs text-center text-gray-500 mt-4">
+              Tim sales kami akan segera menghubungi Anda.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { supabase } from "../../supabaseClient";
+
+const form = ref({
+  storeName: "",
+  email: "",
+  phone: "",
+});
+
+const isSubmitting = ref(false);
+const successMsg = ref("");
+const errorMsg = ref("");
+
+const submitRegistration = async () => {
+  if (!form.value.storeName || !form.value.email || !form.value.phone) return;
+
+  isSubmitting.value = true;
+  successMsg.value = "";
+  errorMsg.value = "";
+
+  try {
+    const { error } = await supabase.from("tenant_registrations").insert([
+      {
+        store_name: form.value.storeName,
+        email: form.value.email,
+        phone: form.value.phone,
+        status: "pending", // Default dari database, dikirim eksplisit sebagai pengingat
+      },
+    ]);
+
+    if (error) {
+      console.error("Gagal mendaftar:", error);
+      errorMsg.value = "Terjadi kesalahan saat pendaftaran. Silakan coba lagi.";
+      return;
+    }
+
+    successMsg.value =
+      "Hore! Pendaftaran Anda berhasil. Tim kami akan segera menghubungi Anda melalui WhatsApp/Email.";
+    form.value = { storeName: "", email: "", phone: "" };
+  } catch (err: any) {
+    errorMsg.value = err.message || "Terjadi kesalahan sistem";
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+</script>

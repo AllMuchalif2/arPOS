@@ -46,7 +46,7 @@ export function useSuperAdminAdminManagement() {
       isCreating.value = true;
 
       // Get Supabase Admin Client
-      const { getSupabaseAdmin } = await import("../../supabaseAdmin");
+      const { getSupabaseAdmin } = await import("../supabaseAdmin");
       const supabaseAdmin = getSupabaseAdmin();
 
       const { data: authData, error: authError } =

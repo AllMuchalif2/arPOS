@@ -14,7 +14,9 @@ export function useSuperAdminPresenter() {
   const admin = useSuperAdminAdminManagement();
   const { isInstallable, installApp } = usePwaInstall();
 
-  const activeTab = ref<"dashboard" | "toko" | "admin">("dashboard");
+  const activeTab = ref<"dashboard" | "toko" | "admin" | "pendaftar">(
+    "dashboard",
+  );
 
   const logout = async () => {
     await auth.logout();

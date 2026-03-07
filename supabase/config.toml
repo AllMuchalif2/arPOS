@@ -1,0 +1,2 @@
+[functions.approve-tenant]
+verify_jwt = false

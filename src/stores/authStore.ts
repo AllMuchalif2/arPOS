@@ -8,7 +8,7 @@ export interface UserProfile {
 }
 
 export const useAuthStore = defineStore("auth", () => {
-  const user = ref(supabase.auth.getUser().then(res => res.data.user));
+  const user = ref(supabase.auth.getUser().then((res) => res.data.user));
   const profile = ref<UserProfile | null>(null);
 
   async function loadUser() {

@@ -4,6 +4,38 @@
   --color-base: #faf7f3;
   --color-primary: #d9a299;
   --color-secondary: #dcc5b2;
+
+  --color-info: #9ab3d9;
+  --color-success: #a3b9a3;
+  --color-danger: #d98e8e;
+}
+
+/* Fallback utilities jika Tailwind v4 tidak men-generate otomatis dari @theme untuk nama tsb */
+.bg-base {
+  background-color: var(--color-base);
+}
+.bg-primary {
+  background-color: var(--color-primary);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+.border-primary {
+  border-color: var(--color-primary);
+}
+.hover-bg-primary:hover {
+  background-color: var(--color-primary);
+  opacity: 0.9;
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+.text-secondary {
+  color: var(--color-secondary);
+}
+.border-secondary {
+  border-color: var(--color-secondary);
 }
 
 body {
