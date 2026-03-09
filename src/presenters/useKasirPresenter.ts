@@ -3,11 +3,22 @@ import { useRouter } from "vue-router";
 import { supabase } from "../supabaseClient";
 import { usePosStore, type Produk } from "../stores/posStore";
 import { usePwaInstall } from "../composables/usePwaInstall";
+import { useAuthStore } from "../stores/authStore";
 
 export function useKasirPresenter() {
   const router = useRouter();
   const posStore = usePosStore();
+  const auth = useAuthStore();
   const { isInstallable, installApp } = usePwaInstall();
+
+  const goToDashboard = async () => {
+    await auth.loadUser();
+    if (auth.profile?.role === "admin") {
+      router.push("/admin-toko");
+    } else {
+      router.push("/kasir-dashboard");
+    }
+  };
 
   const cart = ref<{ product: Produk; qty: number }[]>([]);
   const customerName = ref("");
@@ -15,7 +26,33 @@ export function useKasirPresenter() {
   const orderType = ref<"dine_in" | "takeaway" | "qr_menu">("dine_in");
   const processing = ref(false);
 
+  // Payment
+  const metodePembayaran = ref<"tunai" | "transfer" | "qris">("tunai");
+  const nominalBayar = ref<number | "">("");
+  const kembalian = computed(() => {
+    if (metodePembayaran.value !== "tunai") return 0;
+    const bayar = Number(nominalBayar.value) || 0;
+    return Math.max(0, bayar - totalCartAmount.value);
+  });
+
   const realtimeNotifications = ref<{ id: string; msg: string }[]>([]);
+
+  // Menu filter state
+  const searchQuery = ref("");
+  const selectedCategory = ref<string | null>(null);
+
+  // Filtered products based on search & category
+  const filteredProducts = computed(() => {
+    let prods = posStore.products;
+    if (selectedCategory.value) {
+      prods = prods.filter((p) => p.id_kategori === selectedCategory.value);
+    }
+    if (searchQuery.value.trim()) {
+      const q = searchQuery.value.toLowerCase();
+      prods = prods.filter((p) => p.nama.toLowerCase().includes(q));
+    }
+    return prods;
+  });
 
   // Realtime Subscription Placeholder
   let pesananSubscription: any = null;
@@ -53,6 +90,12 @@ export function useKasirPresenter() {
     if (cart.value.length === 0) return alert("Keranjang kosong");
     if (!customerName.value && orderType.value !== "qr_menu")
       return alert("Nama pelanggan wajib diisi");
+    if (!metodePembayaran.value) return alert("Pilih metode pembayaran");
+    if (
+      metodePembayaran.value === "tunai" &&
+      (Number(nominalBayar.value) || 0) < totalCartAmount.value
+    )
+      return alert("Nominal bayar kurang dari total harga");
 
     processing.value = true;
     try {
@@ -61,6 +104,7 @@ export function useKasirPresenter() {
         nama_pelanggan: customerName.value,
         tipe_pesanan: orderType.value,
         total_harga: totalCartAmount.value,
+        metode_pembayaran: metodePembayaran.value,
         items: cart.value.map((c) => ({
           id_menu: c.product.id,
           jumlah: c.qty,
@@ -80,6 +124,8 @@ export function useKasirPresenter() {
       cart.value = [];
       customerName.value = "";
       selectedTable.value = "";
+      nominalBayar.value = "";
+      metodePembayaran.value = "tunai";
     } catch (error: any) {
       alert("Checkout gagal: " + error.message);
     } finally {
@@ -155,10 +201,17 @@ export function useKasirPresenter() {
     processing,
     realtimeNotifications,
     totalCartAmount,
+    metodePembayaran,
+    nominalBayar,
+    kembalian,
+    searchQuery,
+    selectedCategory,
+    filteredProducts,
     addToCart,
     removeFromCart,
     updateQty,
     handleCheckout,
+    goToDashboard,
     logout,
   };
 }

@@ -18,7 +18,13 @@ const routes: Array<RouteRecordRaw> = [
     path: "/kasir",
     name: "Kasir",
     component: () => import("../views/Kasir.vue"),
-    meta: { requiresAuth: true, roles: ["kasir"] },
+    meta: { requiresAuth: true, roles: ["kasir", "admin"] },
+  },
+  {
+    path: "/kasir-dashboard",
+    name: "KasirDashboard",
+    component: () => import("../views/KasirDashboard.vue"),
+    meta: { requiresAuth: true, roles: ["kasir", "admin"] },
   },
   // admin toko (manajer toko)
   {

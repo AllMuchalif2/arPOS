@@ -13,10 +13,17 @@ const {
   processing,
   realtimeNotifications,
   totalCartAmount,
+  metodePembayaran,
+  nominalBayar,
+  kembalian,
+  searchQuery,
+  selectedCategory,
+  filteredProducts,
   addToCart,
   removeFromCart,
   updateQty,
   handleCheckout,
+  goToDashboard,
   logout,
 } = useKasirPresenter();
 </script>
@@ -52,7 +59,7 @@ const {
           <h1 class="text-xl font-bold text-gray-800">Cafe POS</h1>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <!-- Network Status Badge -->
           <div
             :class="[
@@ -92,16 +99,16 @@ const {
           </button>
 
           <button
-            @click="router.push('/admin')"
-            class="text-sm font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl transition"
+            @click="goToDashboard()"
+            class="bg-secondary text-gray-800 px-4 py-2 rounded-xl hover:bg-[#c2aa96] transition shadow text-sm font-medium"
           >
-            Admin
+            Dashboard
           </button>
           <button
             @click="logout"
-            class="text-gray-400 hover:text-red-500 text-xl transition"
+            class="bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary/80 transition shadow text-sm font-medium"
           >
-            <i class="bx bx-log-out-circle"></i>
+            Logout
           </button>
         </div>
       </header>
@@ -131,6 +138,50 @@ const {
         </button>
       </div>
 
+      <!-- Search & Category Filter -->
+      <div class="bg-white border-b border-gray-100 px-6 pt-4 pb-2 shrink-0">
+        <!-- Search Bar -->
+        <div class="relative mb-3">
+          <i
+            class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"
+          ></i>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Cari menu..."
+            class="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+          />
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
+          <button
+            @click="selectedCategory = null"
+            :class="[
+              'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all',
+              selectedCategory === null
+                ? 'bg-primary text-white shadow-sm shadow-primary/30'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+            ]"
+          >
+            Semua
+          </button>
+          <button
+            v-for="cat in posStore.categories"
+            :key="cat.id"
+            @click="selectedCategory = cat.id"
+            :class="[
+              'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all',
+              selectedCategory === cat.id
+                ? 'bg-primary text-white shadow-sm shadow-primary/30'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+            ]"
+          >
+            {{ cat.nama }}
+          </button>
+        </div>
+      </div>
+
       <!-- Products Grid -->
       <main class="flex-1 overflow-y-auto p-6">
         <div v-if="posStore.isLoading" class="flex justify-center mt-12">
@@ -142,7 +193,7 @@ const {
           class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pb-24 md:pb-0"
         >
           <button
-            v-for="p in posStore.products"
+            v-for="p in filteredProducts"
             :key="p.id"
             @click="addToCart(p)"
             class="bg-white rounded-2xl p-3 flex flex-col items-start border border-gray-100 hover:border-primary/50 hover:shadow-md transition-all text-left group"
@@ -172,11 +223,17 @@ const {
 
           <!-- Empty State -->
           <div
-            v-if="posStore.products.length === 0"
+            v-if="filteredProducts.length === 0"
             class="col-span-full py-12 text-center text-gray-400 border-2 border-dashed border-gray-200 rounded-2xl"
           >
             <i class="bx bx-basket text-4xl mb-2"></i>
-            <p>Belum ada produk</p>
+            <p>
+              {{
+                searchQuery || selectedCategory
+                  ? "Tidak ada menu yang sesuai"
+                  : "Belum ada produk"
+              }}
+            </p>
           </div>
         </div>
       </main>
@@ -307,12 +364,74 @@ const {
       </div>
 
       <!-- Cart Footer -->
-      <div class="p-6 bg-white border-t border-gray-100 shrink-0">
-        <div class="flex justify-between items-center mb-4">
+      <div class="p-5 bg-white border-t border-gray-100 shrink-0 space-y-3">
+        <!-- Total -->
+        <div class="flex justify-between items-center">
           <span class="text-gray-500 font-medium">Total</span>
           <span class="text-2xl font-bold text-gray-800"
             >Rp {{ totalCartAmount.toLocaleString("id-ID") }}</span
           >
+        </div>
+
+        <!-- Metode Pembayaran -->
+        <div>
+          <p
+            class="text-xs text-gray-400 font-medium mb-1.5 uppercase tracking-wide"
+          >
+            Metode Pembayaran
+          </p>
+          <div class="flex gap-2">
+            <button
+              v-for="m in [
+                { id: 'tunai', label: 'Tunai', icon: 'bx-money' },
+                { id: 'transfer', label: 'Transfer', icon: 'bx-transfer' },
+                { id: 'qris', label: 'QRIS', icon: 'bx-qr' },
+              ]"
+              :key="m.id"
+              @click="metodePembayaran = m.id as any"
+              :class="[
+                'flex-1 py-2 px-2 rounded-xl text-xs font-medium transition flex flex-col items-center gap-1',
+                metodePembayaran === m.id
+                  ? 'bg-primary text-white shadow-sm shadow-primary/30'
+                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100',
+              ]"
+            >
+              <i :class="['bx text-lg', m.icon]"></i>
+              {{ m.label }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Nominal Bayar & Kembalian (hanya untuk Tunai) -->
+        <div v-if="metodePembayaran === 'tunai'" class="space-y-2">
+          <div class="relative">
+            <span
+              class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium"
+              >Rp</span
+            >
+            <input
+              v-model="nominalBayar"
+              type="number"
+              min="0"
+              placeholder="Nominal Bayar"
+              class="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition"
+            />
+          </div>
+          <!-- Kembalian -->
+          <div
+            :class="[
+              'flex justify-between items-center px-4 py-2.5 rounded-xl text-sm font-semibold transition-all',
+              kembalian > 0
+                ? 'bg-green-50 text-green-700'
+                : 'bg-gray-50 text-gray-400',
+            ]"
+          >
+            <span class="flex items-center gap-1.5">
+              <i class="bx bx-rotate-left"></i>
+              Kembalian
+            </span>
+            <span>Rp {{ kembalian.toLocaleString("id-ID") }}</span>
+          </div>
         </div>
 
         <button

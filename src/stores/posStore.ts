@@ -33,6 +33,7 @@ export interface PendingOrder {
   nama_pelanggan: string;
   tipe_pesanan: "dine_in" | "takeaway" | "qr_menu";
   total_harga: number;
+  metode_pembayaran?: string;
   items: {
     id_menu: string;
     jumlah: number;
@@ -89,6 +90,7 @@ export const usePosStore = defineStore("pos", () => {
             .from("menu")
             .select("*")
             .eq("id_toko", idToko)
+            .eq("tersedia", true)
             .is("deleted_at", null)
             .order("nama"),
           supabase
@@ -184,6 +186,7 @@ export const usePosStore = defineStore("pos", () => {
           nama_pelanggan: order.nama_pelanggan,
           tipe_pesanan: order.tipe_pesanan,
           total_harga: order.total_harga,
+          metode_pembayaran: order.metode_pembayaran ?? null,
           status: "selesai",
           nomor_pesanan: `INV-${Date.now()}`,
           id_kasir: userData.user.id,
@@ -207,6 +210,14 @@ export const usePosStore = defineStore("pos", () => {
         .from("detail_pesanan")
         .insert(details);
       if (detailErr) throw detailErr;
+
+      // Update status meja → 'terisi' jika dine_in
+      if (order.tipe_pesanan === "dine_in" && order.id_meja) {
+        await supabase
+          .from("meja")
+          .update({ status: "terisi" })
+          .eq("id", order.id_meja);
+      }
 
       return { success: true, offline: false };
     } catch (error) {
