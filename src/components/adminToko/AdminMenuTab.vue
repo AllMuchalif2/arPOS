@@ -40,15 +40,29 @@ const p = useAdminMenuTab(() => emit("refresh"));
       <div
         v-for="prod in products"
         :key="prod.id"
-        class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col hover:shadow-md transition-shadow relative overflow-hidden group"
+        :class="[
+          'bg-white rounded-2xl p-4 shadow-sm border-2 flex flex-col hover:shadow-md transition-shadow relative overflow-hidden group',
+          prod.tersedia ? 'border-gray-100' : 'border-danger/30',
+        ]"
       >
+        <!-- Unavailable overlay badge -->
+        <div
+          v-if="!prod.tersedia"
+          class="absolute top-3 left-3 z-10 bg-danger text-white text-xs font-bold px-2 py-0.5 rounded-full shadow"
+        >
+          Tidak Tersedia
+        </div>
+
         <div
           class="h-40 w-full rounded-xl bg-gray-100 mb-4 overflow-hidden relative"
         >
           <img
             v-if="prod.foto_url"
             :src="prod.foto_url"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            :class="[
+              'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500',
+              !prod.tersedia && 'grayscale opacity-60',
+            ]"
           />
           <i
             v-else
@@ -61,24 +75,44 @@ const p = useAdminMenuTab(() => emit("refresh"));
         <p class="text-primary font-medium mt-1">
           Rp {{ prod.harga.toLocaleString("id-ID") }}
         </p>
-        <div class="mt-auto pt-4 flex gap-2">
+        <div class="mt-auto pt-4 flex flex-col gap-2">
+          <div class="flex gap-2">
+            <button
+              @click="p.openDetailModal(prod)"
+              class="flex-1 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
+            >
+              Detail
+            </button>
+            <button
+              @click="p.openEditModal(prod)"
+              class="flex-1 py-2 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition text-sm font-medium"
+            >
+              Edit
+            </button>
+            <button
+              @click="p.deleteProduct(prod.id)"
+              class="flex-1 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium"
+            >
+              Hapus
+            </button>
+          </div>
+          <!-- Toggle Availability -->
           <button
-            @click="p.openDetailModal(prod)"
-            class="flex-1 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
+            @click="p.toggleTersedia(prod.id, prod.tersedia)"
+            :class="[
+              'w-full py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-1.5',
+              prod.tersedia
+                ? 'bg-success/10 text-success hover:bg-success/20'
+                : 'bg-danger/10 text-danger hover:bg-danger/20',
+            ]"
           >
-            Detail
-          </button>
-          <button
-            @click="p.openEditModal(prod)"
-            class="flex-1 py-2 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition text-sm font-medium"
-          >
-            Edit
-          </button>
-          <button
-            @click="p.deleteProduct(prod.id)"
-            class="flex-1 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium"
-          >
-            Hapus
+            <i
+              :class="[
+                'bx text-base',
+                prod.tersedia ? 'bx-check-circle' : 'bx-x-circle',
+              ]"
+            ></i>
+            {{ prod.tersedia ? "Tersedia" : "Tidak Tersedia" }}
           </button>
         </div>
       </div>

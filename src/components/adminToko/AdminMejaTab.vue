@@ -58,16 +58,23 @@ const p = useAdminMejaTab();
               {{ m.nomor_meja }}
             </td>
             <td class="px-6 py-4 text-center">
-              <span
+              <button
+                @click="p.toggleStatus(m.id, m.status || 'tersedia')"
+                :title="
+                  m.status === 'terisi'
+                    ? 'Klik untuk ubah ke Tersedia'
+                    : 'Klik untuk ubah ke Terisi'
+                "
                 :class="[
-                  'px-3 py-1 rounded-full text-xs font-semibold',
+                  'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition hover:brightness-90 active:scale-95',
                   m.status === 'terisi'
                     ? 'bg-red-100 text-red-700'
                     : 'bg-green-100 text-green-700',
                 ]"
               >
+                <i class="bx bx-transfer-alt text-sm"></i>
                 {{ m.status === "terisi" ? "Terisi" : "Tersedia" }}
-              </span>
+              </button>
             </td>
             <td class="px-6 py-4 text-right space-x-2">
               <button

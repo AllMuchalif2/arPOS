@@ -19,6 +19,7 @@ const {
   chartData,
   logout,
   loadDashboardData,
+  refreshProducts,
 } = useAdminPresenter();
 </script>
 
@@ -110,7 +111,7 @@ const {
         <AdminMenuTab
           v-if="activeTab === 'menu'"
           :products="products"
-          @refresh="loadDashboardData"
+          @refresh="refreshProducts()"
         />
 
         <!-- Kategori Tab -->

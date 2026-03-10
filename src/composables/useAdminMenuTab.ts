@@ -170,6 +170,19 @@ export function useAdminMenuTab(onRefresh: () => void) {
     }
   };
 
+  const toggleTersedia = async (id: string, current: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("menu")
+        .update({ tersedia: !current })
+        .eq("id", id);
+      if (error) throw error;
+      onRefresh();
+    } catch (err: any) {
+      await swalError("Kesalahan", err.message);
+    }
+  };
+
   const getKategoriName = (id: string | null) => {
     if (!id) return "-";
     return kategoriList.value.find((k) => k.id === id)?.nama || "-";
@@ -196,6 +209,7 @@ export function useAdminMenuTab(onRefresh: () => void) {
     closeModal,
     saveProduct,
     deleteProduct,
+    toggleTersedia,
     getKategoriName,
   };
 }

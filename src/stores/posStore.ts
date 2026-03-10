@@ -14,6 +14,7 @@ export interface Produk {
   nama: string;
   harga: number;
   foto_url: string | null;
+  tersedia: boolean;
 }
 
 export interface Meja {

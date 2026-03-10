@@ -1,12 +1,11 @@
 import { ref, onMounted } from "vue";
 import { supabase } from "../supabaseClient";
 import { useRouter } from "vue-router";
-import { usePosStore, type Produk } from "../stores/posStore";
+import { type Produk } from "../stores/posStore";
 import { usePwaInstall } from "../composables/usePwaInstall";
 
 export function useAdminPresenter() {
   const router = useRouter();
-  const posStore = usePosStore();
   const { isInstallable, installApp } = usePwaInstall();
 
   const products = ref<Produk[]>([]);
@@ -144,13 +143,39 @@ export function useAdminPresenter() {
         };
       }
 
-      // Also load initial products for the Menu tab
-      await posStore.fetchMenu();
-      products.value = posStore.products;
+      // Also load ALL products for the Menu tab (no tersedia filter)
+      await refreshProducts(profile.id_toko);
     } catch (error) {
       console.error("Error loading dashboard data", error);
     } finally {
       loading.value = false;
+    }
+  };
+
+  const refreshProducts = async (idToko?: string) => {
+    try {
+      let tokoId = idToko;
+      if (!tokoId) {
+        const { data: userData } = await supabase.auth.getUser();
+        const { data: profile } = await supabase
+          .from("user_profiles")
+          .select("id_toko")
+          .eq("id", userData.user?.id)
+          .single();
+        tokoId = profile?.id_toko;
+      }
+      if (!tokoId) return;
+
+      const { data } = await supabase
+        .from("menu")
+        .select("*")
+        .eq("id_toko", tokoId)
+        .is("deleted_at", null)
+        .order("nama");
+
+      products.value = data || [];
+    } catch (error) {
+      console.error("Error refreshing products", error);
     }
   };
 
@@ -174,5 +199,6 @@ export function useAdminPresenter() {
     chartData,
     logout,
     loadDashboardData,
+    refreshProducts,
   };
 }

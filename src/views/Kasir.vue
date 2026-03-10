@@ -286,7 +286,13 @@ const {
             class="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition appearance-none"
           >
             <option value="">-- Table --</option>
-            <option v-for="t in posStore.tables" :key="t.id" :value="t.id">
+            <option
+              v-for="t in posStore.tables.filter(
+                (t) => t.status === 'tersedia',
+              )"
+              :key="t.id"
+              :value="t.id"
+            >
               Meja {{ t.nomor_meja }}
             </option>
           </select>

@@ -100,6 +100,22 @@ export function useAdminMejaTab() {
     }
   };
 
+  const toggleStatus = async (id: string, current: string) => {
+    const newStatus = current === "tersedia" ? "terisi" : "tersedia";
+    try {
+      const { error } = await supabase
+        .from("meja")
+        .update({ status: newStatus })
+        .eq("id", id);
+      if (error) throw error;
+      // Optimistic update
+      const meja = mejaList.value.find((m) => m.id === id);
+      if (meja) meja.status = newStatus;
+    } catch (err: any) {
+      await swalError("Kesalahan", err.message);
+    }
+  };
+
   const deleteMeja = async (id: string) => {
     const ok = await swalConfirm(
       "Hapus meja ini?",
@@ -135,5 +151,6 @@ export function useAdminMejaTab() {
     openEditModal,
     saveMeja,
     deleteMeja,
+    toggleStatus,
   };
 }
