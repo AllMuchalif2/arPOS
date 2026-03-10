@@ -91,14 +91,23 @@ const p = useAdminRiwayatTab();
                 {{ r.total_harga.toLocaleString("id-ID") }}
               </td>
               <td class="px-6 py-4">
-                <span
+                <select
+                  :value="r.status"
+                  @change="
+                    p.updateStatus(
+                      r.id,
+                      ($event.target as HTMLSelectElement).value,
+                    )
+                  "
                   :class="[
-                    'px-2.5 py-1 text-xs font-semibold rounded-full capitalize',
+                    'text-xs font-semibold rounded-full px-3 py-1 border-0 outline-none cursor-pointer transition',
                     p.getStatusBadgeClass(r.status),
                   ]"
                 >
-                  {{ r.status }}
-                </span>
+                  <option v-for="s in p.statusOptions" :key="s" :value="s">
+                    {{ s }}
+                  </option>
+                </select>
               </td>
             </tr>
           </tbody>

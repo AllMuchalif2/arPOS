@@ -25,70 +25,107 @@ const p = useAdminMejaTab();
       class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
     >
       <table class="w-full" v-if="p.mejaList.value.length > 0">
-        <thead class="bg-gray-50 border-b border-gray-200">
+        <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
             <th
-              class="px-6 py-3 text-left text-sm font-semibold text-gray-700 w-16"
+              class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-12"
             >
               No
             </th>
-            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-              Identitas/Nomor Meja
+            <th
+              class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"
+            >
+              Nama Meja
             </th>
             <th
-              class="px-6 py-3 text-center text-sm font-semibold text-gray-700 w-32"
+              class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"
+            >
+              URL Slug
+            </th>
+            <th
+              class="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-36"
             >
               Status
             </th>
             <th
-              class="px-6 py-3 text-right text-sm font-semibold text-gray-700 w-48"
+              class="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider w-36"
             >
               Aksi
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-gray-50">
           <tr
             v-for="(m, i) in p.mejaList.value"
             :key="m.id"
-            class="border-b border-gray-100 hover:bg-gray-50 transition"
+            class="hover:bg-gray-50/70 transition-colors"
           >
-            <td class="px-6 py-4 text-sm text-gray-500">{{ i + 1 }}</td>
-            <td class="px-6 py-4 text-sm font-medium text-gray-800">
-              {{ m.nomor_meja }}
+            <td class="px-5 py-3.5 text-sm text-gray-400 font-medium">
+              {{ i + 1 }}
             </td>
-            <td class="px-6 py-4 text-center">
+            <td class="px-5 py-3.5">
+              <span class="text-sm font-semibold text-gray-800">{{
+                m.nomor_meja
+              }}</span>
+            </td>
+            <td class="px-5 py-3.5">
+              <code
+                class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-lg font-mono"
+              >
+                /menu/…/{{
+                  m.nomor_meja
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")
+                    .replace(/[^a-z0-9-]/g, "")
+                }}
+              </code>
+            </td>
+            <td class="px-5 py-3.5 text-center">
               <button
                 @click="p.toggleStatus(m.id, m.status || 'tersedia')"
                 :title="
-                  m.status === 'terisi'
-                    ? 'Klik untuk ubah ke Tersedia'
-                    : 'Klik untuk ubah ke Terisi'
+                  m.status === 'terisi' ? 'Klik → Tersedia' : 'Klik → Terisi'
                 "
                 :class="[
-                  'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition hover:brightness-90 active:scale-95',
+                  'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all hover:brightness-90 active:scale-95',
                   m.status === 'terisi'
                     ? 'bg-red-100 text-red-700'
-                    : 'bg-green-100 text-green-700',
+                    : 'bg-emerald-100 text-emerald-700',
                 ]"
               >
-                <i class="bx bx-transfer-alt text-sm"></i>
+                <span
+                  :class="[
+                    'w-1.5 h-1.5 rounded-full',
+                    m.status === 'terisi' ? 'bg-red-500' : 'bg-emerald-500',
+                  ]"
+                ></span>
                 {{ m.status === "terisi" ? "Terisi" : "Tersedia" }}
               </button>
             </td>
-            <td class="px-6 py-4 text-right space-x-2">
-              <button
-                @click="p.openEditModal(m)"
-                class="inline-block py-1.5 px-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
-              >
-                Edit
-              </button>
-              <button
-                @click="p.deleteMeja(m.id)"
-                class="inline-block py-1.5 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium"
-              >
-                Hapus
-              </button>
+            <td class="px-5 py-3.5 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button
+                  @click="p.openQrModal(m)"
+                  class="flex-1 py-2 px-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
+                  title="Cetak QR"
+                >
+                  QR
+                </button>
+                <button
+                  @click="p.openEditModal(m)"
+                  class="flex-1 py-2 px-3 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition text-sm font-medium"
+                  title="Edit"
+                >
+                  Edit
+                </button>
+                <button
+                  @click="p.deleteMeja(m.id)"
+                  class="flex-1 py-2 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium"
+                  title="Hapus"
+                >
+                  Hapus
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -167,6 +204,50 @@ const p = useAdminMejaTab();
             </button>
           </div>
         </form>
+      </div>
+    </div>
+    <!-- QR Preview Modal -->
+    <div
+      v-if="p.showQrModal.value && p.qrMeja.value"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+      @click.self="p.showQrModal.value = false"
+    >
+      <div
+        class="bg-white rounded-2xl w-full max-w-xs shadow-2xl overflow-hidden"
+      >
+        <!-- Preview Card -->
+        <div class="p-8 flex flex-col items-center text-center bg-white">
+          <p
+            class="text-xs font-bold tracking-widest text-gray-400 uppercase mb-1"
+          >
+            {{ p.namaToko.value }}
+          </p>
+          <h2 class="text-3xl font-extrabold text-gray-900 mb-5">
+            {{ p.qrMeja.value.nomor_meja }}
+          </h2>
+          <img
+            :src="p.qrDataUrl.value"
+            class="w-52 h-52 rounded-xl shadow-sm"
+            alt="QR Code"
+          />
+          <p class="mt-4 text-xs text-gray-400">Scan untuk memesan</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="px-6 pb-6 flex gap-3">
+          <button
+            @click="p.showQrModal.value = false"
+            class="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-medium text-sm"
+          >
+            Tutup
+          </button>
+          <button
+            @click="p.printQr()"
+            class="flex-1 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/80 transition font-semibold text-sm flex items-center justify-center gap-2"
+          >
+            <i class="bx bx-printer"></i> Cetak
+          </button>
+        </div>
       </div>
     </div>
   </div>

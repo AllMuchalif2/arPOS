@@ -3,6 +3,7 @@ import { useKasirDashboardPresenter } from "../presenters/useKasirDashboardPrese
 import KasirRingkasanTab from "../components/kasir/KasirRingkasanTab.vue";
 import KasirMejaTab from "../components/kasir/KasirMejaTab.vue";
 import KasirMenuTab from "../components/kasir/KasirMenuTab.vue";
+import KasirPesananTab from "../components/kasir/KasirPesananTab.vue";
 
 const {
   router,
@@ -68,6 +69,7 @@ const {
         <button
           v-for="tab in [
             { id: 'ringkasan', label: 'Ringkasan' },
+            { id: 'pesanan', label: 'Pesanan' },
             { id: 'meja', label: 'Meja' },
             { id: 'menu', label: 'Menu' },
           ]"
@@ -99,6 +101,8 @@ const {
         :total-dine-in="totalDineIn"
         :total-takeaway="totalTakeaway"
       />
+
+      <KasirPesananTab v-if="activeTab === 'pesanan'" />
 
       <KasirMejaTab
         v-if="activeTab === 'meja'"

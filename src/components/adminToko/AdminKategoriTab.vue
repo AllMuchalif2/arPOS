@@ -55,7 +55,7 @@ const p = useAdminKategoriTab();
             <td class="px-6 py-4 text-right space-x-2">
               <button
                 @click="p.openEditModal(k)"
-                class="inline-block py-1.5 px-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
+                class="inline-block py-1.5 px-3 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition text-sm font-medium"
               >
                 Edit
               </button>

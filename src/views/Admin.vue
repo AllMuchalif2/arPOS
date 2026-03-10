@@ -47,7 +47,7 @@ const {
             <i class="bx bx-download"></i> Install App
           </button>
           <button
-            @click="router.push('/')"
+            @click="router.push('/kasir')"
             class="bg-secondary text-gray-800 px-4 py-2 rounded-xl hover:bg-[#c2aa96] transition shadow"
           >
             POS Cashier

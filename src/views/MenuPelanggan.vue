@@ -33,9 +33,17 @@ const {
         <i class="bx bx-check text-5xl text-green-500"></i>
       </div>
       <h1 class="text-2xl font-bold text-gray-800 mb-2">Pesanan Diterima!</h1>
-      <p class="text-gray-500 mb-8 max-w-xs">
-        Pesanan Anda sedang diproses oleh kasir. Silakan tunggu di meja Anda.
+      <p class="text-gray-500 mb-2 max-w-xs">
+        Pesanan Anda sedang diproses. Silakan
+        <span class="font-semibold text-primary">menuju kasir</span> untuk
+        melakukan pembayaran.
       </p>
+      <div
+        class="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-sm font-medium px-4 py-2.5 rounded-xl mb-8"
+      >
+        <i class="bx bx-info-circle text-lg"></i>
+        Tunjukkan pesanan ini ke kasir
+      </div>
       <button
         @click="orderSuccess = false"
         class="bg-primary text-white font-bold py-3 px-8 rounded-xl hover:bg-[#c99188] transition-colors"

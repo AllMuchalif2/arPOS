@@ -1,5 +1,6 @@
 import { ref, onMounted } from "vue";
 import { supabase } from "../supabaseClient";
+import { swalError } from "./useSwal";
 
 export interface DetailPesanan {
   id: string;
@@ -91,6 +92,29 @@ export function useAdminRiwayatTab() {
     }
   };
 
+  const statusOptions = ["pending", "menunggu", "selesai", "batal"];
+
+  const updateStatus = async (id: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from("pesanan")
+        .update({ status: newStatus })
+        .eq("id", id);
+      if (error) throw error;
+      // Optimistic update
+      const item = riwayat.value.find((r) => r.id === id);
+      if (item) {
+        item.status = newStatus;
+        // Recalculate stats
+        stats.value.totalPendapatan = riwayat.value
+          .filter((r) => r.status === "selesai")
+          .reduce((sum, r) => sum + r.total_harga, 0);
+      }
+    } catch (err: any) {
+      await swalError("Gagal mengubah status", err.message);
+    }
+  };
+
   onMounted(() => {
     loadRiwayat();
   });
@@ -102,5 +126,7 @@ export function useAdminRiwayatTab() {
     stats,
     loadRiwayat,
     getStatusBadgeClass,
+    statusOptions,
+    updateStatus,
   };
 }

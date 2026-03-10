@@ -4,6 +4,7 @@ import { supabase } from "../supabaseClient";
 import { usePosStore, type Produk } from "../stores/posStore";
 import { usePwaInstall } from "../composables/usePwaInstall";
 import { useAuthStore } from "../stores/authStore";
+import { swalSuccess, swalError } from "../composables/useSwal";
 
 export function useKasirPresenter() {
   const router = useRouter();
@@ -87,15 +88,31 @@ export function useKasirPresenter() {
   };
 
   const handleCheckout = async () => {
-    if (cart.value.length === 0) return alert("Keranjang kosong");
-    if (!customerName.value && orderType.value !== "qr_menu")
-      return alert("Nama pelanggan wajib diisi");
-    if (!metodePembayaran.value) return alert("Pilih metode pembayaran");
+    if (cart.value.length === 0) {
+      await swalError("Keranjang kosong", "Tambahkan menu terlebih dahulu");
+      return;
+    }
+    if (!customerName.value && orderType.value !== "qr_menu") {
+      await swalError("Nama wajib diisi", "Masukkan nama pelanggan");
+      return;
+    }
+    if (!metodePembayaran.value) {
+      await swalError(
+        "Metode pembayaran",
+        "Pilih metode pembayaran terlebih dahulu",
+      );
+      return;
+    }
     if (
       metodePembayaran.value === "tunai" &&
       (Number(nominalBayar.value) || 0) < totalCartAmount.value
-    )
-      return alert("Nominal bayar kurang dari total harga");
+    ) {
+      await swalError(
+        "Nominal kurang",
+        "Nominal bayar kurang dari total harga",
+      );
+      return;
+    }
 
     processing.value = true;
     try {
@@ -115,9 +132,15 @@ export function useKasirPresenter() {
 
       const res = await posStore.submitOrder(orderData);
       if (res.offline) {
-        alert("Pesanan disimpan offline (akan disinkronkan saat online)");
+        await swalSuccess(
+          "Disimpan Offline",
+          "Pesanan akan disinkronkan saat online",
+        );
       } else {
-        alert("Pesanan berhasil!");
+        await swalSuccess(
+          "Pesanan Berhasil!",
+          "Pesanan telah dikirim ke dapur",
+        );
       }
 
       // Reset form
@@ -127,7 +150,7 @@ export function useKasirPresenter() {
       nominalBayar.value = "";
       metodePembayaran.value = "tunai";
     } catch (error: any) {
-      alert("Checkout gagal: " + error.message);
+      await swalError("Checkout Gagal", error.message);
     } finally {
       processing.value = false;
     }

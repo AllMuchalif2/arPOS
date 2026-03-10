@@ -2,6 +2,8 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { supabase } from "../supabaseClient";
 import { usePwaInstall } from "../composables/usePwaInstall";
+import { slugify } from "../composables/useSlugify";
+import { swalError } from "../composables/useSwal";
 
 export interface ProdukPelanggan {
   id: string;
@@ -13,9 +15,17 @@ export interface ProdukPelanggan {
 
 export function useMenuPelangganPresenter() {
   const route = useRoute();
-  const idToko = route.query.toko as string;
-  const idMeja = route.query.meja as string;
   const { isInstallable, installApp } = usePwaInstall();
+
+  // Support both slug route (/menu/:tokoSlug/:mejaSlug) and old query params (?toko=uuid&meja=uuid)
+  const tokoSlugParam = route.params.tokoSlug as string | undefined;
+  const mejaSlugParam = route.params.mejaSlug as string | undefined;
+  const tokoIdParam = route.query.toko as string | undefined;
+  const mejaIdParam = route.query.meja as string | undefined;
+
+  const resolvedIdToko = ref("");
+  const resolvedIdMeja = ref("");
+  const idMeja = ref(""); // display (nomor_meja or slug)
 
   const products = ref<ProdukPelanggan[]>([]);
   const loading = ref(true);
@@ -38,23 +48,69 @@ export function useMenuPelangganPresenter() {
   });
 
   const loadMenu = async () => {
-    if (!idToko) {
-      alert("QR Code tidak valid (id_toko hilang)");
-      loading.value = false;
-      return;
-    }
-
     try {
+      // --- Slug mode: /menu/:tokoSlug/:mejaSlug ---
+      if (tokoSlugParam) {
+        // Fetch all toko and find by slug
+        const { data: allToko } = await supabase
+          .from("toko")
+          .select("id, nama_toko");
+
+        const matched = (allToko || []).find(
+          (t: any) => slugify(t.nama_toko) === tokoSlugParam,
+        );
+        if (!matched) {
+          await swalError(
+            "Toko tidak ditemukan",
+            "QR Code tidak valid atau toko sudah tidak aktif",
+          );
+          loading.value = false;
+          return;
+        }
+        resolvedIdToko.value = matched.id;
+
+        // Find meja by slug
+        if (mejaSlugParam) {
+          const { data: allMeja } = await supabase
+            .from("meja")
+            .select("id, nomor_meja")
+            .eq("id_toko", matched.id)
+            .is("deleted_at", null);
+
+          const matchedMeja = (allMeja || []).find(
+            (m: any) => slugify(m.nomor_meja) === mejaSlugParam,
+          );
+          if (matchedMeja) {
+            resolvedIdMeja.value = matchedMeja.id;
+            idMeja.value = matchedMeja.nomor_meja;
+          }
+        }
+      } else if (tokoIdParam) {
+        // --- Legacy mode: ?toko=uuid&meja=uuid ---
+        resolvedIdToko.value = tokoIdParam;
+        if (mejaIdParam) {
+          resolvedIdMeja.value = mejaIdParam;
+          idMeja.value = mejaIdParam;
+        }
+      } else {
+        await swalError("QR Code tidak valid", "Toko tidak ditemukan");
+        loading.value = false;
+        return;
+      }
+
+      // Fetch menu
       const { data: produkData, error } = await supabase
         .from("menu")
         .select("*")
-        .eq("id_toko", idToko)
+        .eq("id_toko", resolvedIdToko.value)
+        .eq("tersedia", true)
+        .is("deleted_at", null)
         .order("nama");
 
       if (error) throw error;
       if (produkData) products.value = produkData;
     } catch (err: any) {
-      alert("Gagal memuat menu: " + err.message);
+      await swalError("Gagal memuat menu", err.message);
     } finally {
       loading.value = false;
     }
@@ -80,16 +136,25 @@ export function useMenuPelangganPresenter() {
   };
 
   const submitOrder = async () => {
-    if (cart.value.length === 0) return alert("Keranjang kosong");
-    if (!namaPelanggan.value) return alert("Mohon isi nama Anda");
+    if (cart.value.length === 0) {
+      await swalError("Keranjang kosong", "Tambahkan menu terlebih dahulu");
+      return;
+    }
+    if (!namaPelanggan.value) {
+      await swalError(
+        "Nama wajib diisi",
+        "Masukkan nama pemesan sebelum memesan",
+      );
+      return;
+    }
 
     processing.value = true;
     try {
       const { data: pesanan, error: pesananErr } = await supabase
         .from("pesanan")
         .insert({
-          id_toko: idToko,
-          id_meja: idMeja || null,
+          id_toko: resolvedIdToko.value,
+          id_meja: resolvedIdMeja.value || null,
           nama_pelanggan: namaPelanggan.value,
           tipe_pesanan: "qr_menu",
           total_harga: totalCartAmount.value,
@@ -103,7 +168,7 @@ export function useMenuPelangganPresenter() {
 
       const details = cart.value.map((item) => ({
         id_pesanan: pesanan.id,
-        id_toko: idToko,
+        id_toko: resolvedIdToko.value,
         id_menu: item.product.id,
         jumlah: item.qty,
         harga_satuan: item.product.harga,
@@ -119,7 +184,7 @@ export function useMenuPelangganPresenter() {
       cart.value = [];
       isCartOpen.value = false;
     } catch (err: any) {
-      alert("Gagal mengirim pesanan: " + err.message);
+      await swalError("Gagal mengirim pesanan", err.message);
     } finally {
       processing.value = false;
     }
