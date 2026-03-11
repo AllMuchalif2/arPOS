@@ -89,14 +89,14 @@ const p = useAdminMejaTab();
                 :class="[
                   'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all hover:brightness-90 active:scale-95',
                   m.status === 'terisi'
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-emerald-100 text-emerald-700',
+                    ? 'bg-danger/20 text-danger'
+                    : 'bg-success/20 text-success',
                 ]"
               >
                 <span
                   :class="[
                     'w-1.5 h-1.5 rounded-full',
-                    m.status === 'terisi' ? 'bg-red-500' : 'bg-emerald-500',
+                    m.status === 'terisi' ? 'bg-danger' : 'bg-success',
                   ]"
                 ></span>
                 {{ m.status === "terisi" ? "Terisi" : "Tersedia" }}
@@ -106,21 +106,21 @@ const p = useAdminMejaTab();
               <div class="flex items-center justify-end gap-1.5">
                 <button
                   @click="p.openQrModal(m)"
-                  class="flex-1 py-2 px-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
+                  class="flex-1 py-2 px-3 bg-info/10 text-info rounded-lg hover:bg-info/20 transition text-sm font-medium"
                   title="Cetak QR"
                 >
                   QR
                 </button>
                 <button
                   @click="p.openEditModal(m)"
-                  class="flex-1 py-2 px-3 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition text-sm font-medium"
+                  class="flex-1 py-2 px-3 bg-warning/10 text-warning rounded-lg hover:bg-warning/20 transition text-sm font-medium"
                   title="Edit"
                 >
                   Edit
                 </button>
                 <button
                   @click="p.deleteMeja(m.id)"
-                  class="flex-1 py-2 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium"
+                  class="flex-1 py-2 px-3 bg-danger/10 text-danger rounded-lg hover:bg-danger/20 transition text-sm font-medium"
                   title="Hapus"
                 >
                   Hapus

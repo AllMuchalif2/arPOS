@@ -61,39 +61,30 @@ export function useAdminKasirTab() {
     formLoading.value = true;
 
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      const { data: profile } = await supabase
-        .from("user_profiles")
-        .select("id_toko")
-        .eq("id", userData.user?.id)
-        .single();
+      // Ambil JWT session aktif agar Edge Function menerima token user (bukan anon key)
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) throw new Error("Sesi tidak valid, silakan login ulang");
 
-      if (!profile?.id_toko) throw new Error("Anda tidak memiliki akses toko.");
+      // Panggil Edge Function — SERVICE_ROLE_KEY aman di server
+      // id_toko diambil dari profil caller di server, tidak bisa dimanipulasi dari client
+      const { data, error } = await supabase.functions.invoke(
+        "create-kasir-user",
+        {
+          body: {
+            email: form.value.email,
+            password: form.value.password,
+            nama: form.value.nama,
+          },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        },
+      );
 
-      const { getSupabaseAdmin } = await import("../supabaseAdmin");
-      const supabaseAdmin = getSupabaseAdmin();
-
-      const { data: authData, error: authError } =
-        await supabaseAdmin.auth.admin.createUser({
-          email: form.value.email,
-          password: form.value.password,
-          email_confirm: true,
-        });
-
-      if (authError) throw authError;
-      if (!authData.user) throw new Error("Gagal membuat user");
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const { error: linkError } = await supabase.from("user_profiles").insert({
-        id: authData.user.id,
-        id_toko: profile.id_toko,
-        role: "kasir",
-        nama: form.value.nama,
-        email: form.value.email,
-      });
-
-      if (linkError) throw linkError;
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || "Gagal membuat kasir");
 
       await swalSuccess("Berhasil", "Akun kasir baru berhasil dibuat");
       showModal.value = false;

@@ -77,13 +77,13 @@
           <form @submit.prevent="submitRegistration" class="space-y-5">
             <div
               v-if="errorMsg"
-              class="p-4 bg-red-50 text-red-700 rounded-xl mb-4 text-sm font-medium border border-red-200"
+              class="p-4 bg-danger/10 text-danger rounded-xl mb-4 text-sm font-medium border border-danger/20"
             >
               {{ errorMsg }}
             </div>
             <div
               v-if="successMsg"
-              class="p-4 bg-green-50 text-green-700 rounded-xl mb-4 text-sm font-medium border border-green-200"
+              class="p-4 bg-success/10 text-success rounded-xl mb-4 text-sm font-medium border border-success/20"
             >
               {{ successMsg }}
             </div>

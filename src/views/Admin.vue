@@ -42,7 +42,7 @@ const {
           <button
             v-if="isInstallable"
             @click="installApp"
-            class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition shadow flex items-center gap-2"
+            class="bg-info text-white px-4 py-2 rounded-xl hover:bg-info/80 transition shadow flex items-center gap-2"
           >
             <i class="bx bx-download"></i> Install App
           </button>

@@ -63,8 +63,8 @@ const chartOptions = {
               {{ stats.totalMenu }}
             </h3>
           </div>
-          <div class="bg-blue-50 p-4 rounded-full">
-            <i class="bx bx-food-menu text-3xl text-blue-500"></i>
+          <div class="bg-info/10 p-4 rounded-full">
+            <i class="bx bx-food-menu text-3xl text-info"></i>
           </div>
         </div>
       </div>
@@ -91,8 +91,8 @@ const chartOptions = {
               {{ stats.totalMeja }}
             </h3>
           </div>
-          <div class="bg-green-50 p-4 rounded-full">
-            <i class="bx bx-table text-3xl text-green-500"></i>
+          <div class="bg-success/10 p-4 rounded-full">
+            <i class="bx bx-table text-3xl text-success"></i>
           </div>
         </div>
       </div>

@@ -28,9 +28,9 @@ const {
       class="min-h-screen flex flex-col items-center justify-center p-6 text-center"
     >
       <div
-        class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6"
+        class="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mb-6"
       >
-        <i class="bx bx-check text-5xl text-green-500"></i>
+        <i class="bx bx-check text-5xl text-success"></i>
       </div>
       <h1 class="text-2xl font-bold text-gray-800 mb-2">Pesanan Diterima!</h1>
       <p class="text-gray-500 mb-2 max-w-xs">
@@ -39,7 +39,7 @@ const {
         melakukan pembayaran.
       </p>
       <div
-        class="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-sm font-medium px-4 py-2.5 rounded-xl mb-8"
+        class="flex items-center gap-2 bg-warning/10 border border-warning/30 text-warning text-sm font-medium px-4 py-2.5 rounded-xl mb-8"
       >
         <i class="bx bx-info-circle text-lg"></i>
         Tunjukkan pesanan ini ke kasir
@@ -77,7 +77,7 @@ const {
         <button
           v-if="isInstallable"
           @click="installApp"
-          class="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg flex items-center gap-1 shadow hover:bg-blue-700 transition"
+          class="text-xs bg-info text-white px-3 py-1.5 rounded-lg flex items-center gap-1 shadow hover:bg-info/80 transition"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

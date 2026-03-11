@@ -65,14 +65,14 @@ const {
             :class="[
               'px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-colors',
               posStore.isOnline
-                ? 'bg-green-50 text-green-700'
-                : 'bg-red-50 text-red-600',
+                ? 'bg-success/10 text-success'
+                : 'bg-danger/10 text-danger',
             ]"
           >
             <div
               :class="[
                 'w-2 h-2 rounded-full',
-                posStore.isOnline ? 'bg-green-500' : 'bg-red-500',
+                posStore.isOnline ? 'bg-success' : 'bg-danger',
               ]"
             ></div>
             {{ posStore.isOnline ? "Online" : "Offline Mode" }}
@@ -81,7 +81,7 @@ const {
           <button
             v-if="isInstallable"
             @click="installApp"
-            class="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl transition flex items-center gap-2 shadow-sm"
+            class="text-sm font-medium bg-info hover:bg-info/80 text-white px-3 py-2 rounded-xl transition flex items-center gap-2 shadow-sm"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -335,7 +335,7 @@ const {
               </h4>
               <button
                 @click="removeFromCart(i)"
-                class="text-gray-300 hover:text-red-500 transition-colors pt-0.5"
+                class="text-gray-300 hover:text-danger transition-colors pt-0.5"
               >
                 <i class="bx bx-x text-lg"></i>
               </button>
@@ -428,7 +428,7 @@ const {
             :class="[
               'flex justify-between items-center px-4 py-2.5 rounded-xl text-sm font-semibold transition-all',
               kembalian > 0
-                ? 'bg-green-50 text-green-700'
+                ? 'bg-success/10 text-success'
                 : 'bg-gray-50 text-gray-400',
             ]"
           >

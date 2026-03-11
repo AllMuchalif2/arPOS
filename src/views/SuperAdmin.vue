@@ -28,7 +28,7 @@ const {
           <button
             v-if="isInstallable"
             @click="installApp"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+            class="px-4 py-2 bg-info text-white rounded-lg hover:bg-info/80 transition flex items-center gap-2"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

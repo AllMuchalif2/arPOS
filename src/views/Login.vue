@@ -26,7 +26,9 @@ const { email, password, loading, errorMsg, handleLogin } = useLoginPresenter();
           alt="arPOS Logo"
           class="w-16 h-16 rounded-lg mx-auto"
         />
-        <h1 class="text-2xl font-bold text-gray-800">ar<span class="text-primary">POS</span></h1>
+        <h1 class="text-2xl font-bold text-gray-800">
+          ar<span class="text-primary">POS</span>
+        </h1>
         <p class="text-sm text-gray-500 mt-2">Sign in to your POS Dashboard</p>
       </div>
 
@@ -73,7 +75,7 @@ const { email, password, loading, errorMsg, handleLogin } = useLoginPresenter();
 
         <div
           v-if="errorMsg"
-          class="p-3 rounded-lg bg-red-50 text-red-600 text-sm py-2 flex items-center gap-2"
+          class="p-3 rounded-lg bg-danger/10 text-danger text-sm py-2 flex items-center gap-2"
         >
           <i class="bx bx-error-circle text-lg"></i>
           <span>{{ errorMsg }}</span>

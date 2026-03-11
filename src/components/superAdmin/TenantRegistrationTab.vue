@@ -12,7 +12,7 @@ const p = useTenantRegistrationPresenter();
       </h2>
       <button
         @click="p.fetchRegistrations()"
-        class="p-2 text-slate-500 hover:text-blue-600 transition rounded-full hover:bg-blue-50"
+        class="p-2 text-slate-500 hover:text-info transition rounded-full hover:bg-info/10"
       >
         <svg
           class="w-5 h-5"
@@ -33,13 +33,13 @@ const p = useTenantRegistrationPresenter();
     <!-- Info Credentials Sementara -->
     <div
       v-if="p.newTenantCreds.value"
-      class="p-4 bg-green-50/80 text-green-700 rounded-xl border border-green-200/60 shadow-sm"
+      class="p-4 bg-success/10 text-success rounded-xl border border-success/20 shadow-sm"
     >
       <div
-        class="bg-white p-4 rounded-lg border border-green-100 text-sm shadow-sm"
+        class="bg-white p-4 rounded-lg border border-success/20 text-sm shadow-sm"
       >
         <p class="text-slate-500 mb-3">
-          <i class="bx bx-info-circle mr-1 align-middle text-green-500"></i>
+          <i class="bx bx-info-circle mr-1 align-middle text-success"></i>
           <span class="align-middle font-medium"
             >Beri tahu pendaftar detail akun mereka:</span
           >
@@ -161,19 +161,19 @@ const p = useTenantRegistrationPresenter();
               <td class="p-4">
                 <span
                   v-if="reg.status === 'pending'"
-                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-warning/20 text-warning"
                 >
                   Menunggu ACC
                 </span>
                 <span
                   v-else-if="reg.status === 'approved'"
-                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-success/20 text-success"
                 >
                   Diterima
                 </span>
                 <span
                   v-else
-                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-danger/20 text-danger"
                 >
                   Ditolak
                 </span>
@@ -186,7 +186,7 @@ const p = useTenantRegistrationPresenter();
                   <button
                     @click="p.approveTenant(reg.id, reg.store_name)"
                     :disabled="p.processingId.value !== null"
-                    class="flex-1 py-1.5 px-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="flex-1 py-1.5 px-3 bg-info text-info-600 rounded-lg hover:bg-info hover:text-white transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Terima & Buat Akun"
                   >
                     Terima
@@ -194,7 +194,7 @@ const p = useTenantRegistrationPresenter();
                   <button
                     @click="p.rejectTenant(reg.id, reg.store_name)"
                     :disabled="p.processingId.value !== null"
-                    class="flex-1 py-1.5 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="flex-1 py-1.5 px-3 bg-danger text-danger-600 rounded-lg hover:bg-danger hover:text-white transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Tolak"
                   >
                     Tolak

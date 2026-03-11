@@ -92,7 +92,7 @@ const handleDelete = async (id: string) => {
               <td class="px-6 py-4 text-center">
                 <button
                   @click="handleDelete(a.id)"
-                  class="inline-block py-1 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium"
+                  class="inline-block py-1 px-3 bg-danger text-danger-600 rounded-lg hover:bg-danger hover:text-white transition text-sm font-medium"
                 >
                   Hapus
                 </button>

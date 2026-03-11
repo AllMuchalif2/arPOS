@@ -28,11 +28,11 @@ const p = useAdminRiwayatTab();
           {{ p.stats.value.totalTransaksi }}
         </h3>
       </div>
-      <div class="bg-green-50 rounded-xl p-4 border border-green-100">
-        <p class="text-green-600 font-medium text-sm">
+      <div class="bg-success/10 rounded-xl p-4 border border-success/20">
+        <p class="text-success font-medium text-sm">
           Total Pendapatan (Selesai)
         </p>
-        <h3 class="text-2xl font-bold text-green-900 mt-1">
+        <h3 class="text-2xl font-bold text-gray-800 mt-1">
           Rp {{ p.stats.value.totalPendapatan.toLocaleString("id-ID") }}
         </h3>
       </div>

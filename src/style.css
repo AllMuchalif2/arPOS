@@ -8,6 +8,7 @@
   --color-info: #9ab3d9;
   --color-success: #a3b9a3;
   --color-danger: #d98e8e;
+  --color-warning: #f0c419;
 }
 
 /* Fallback utilities jika Tailwind v4 tidak men-generate otomatis dari @theme untuk nama tsb */

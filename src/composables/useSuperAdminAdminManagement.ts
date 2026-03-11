@@ -45,32 +45,32 @@ export function useSuperAdminAdminManagement() {
 
       isCreating.value = true;
 
-      // Get Supabase Admin Client
-      const { getSupabaseAdmin } = await import("../supabaseAdmin");
-      const supabaseAdmin = getSupabaseAdmin();
-
-      const { data: authData, error: authError } =
-        await supabaseAdmin.auth.admin.createUser({
-          email: form.value.email,
-          password: form.value.password,
-          email_confirm: true,
-        });
-
-      if (authError) throw authError;
-      if (!authData.user) throw new Error("Gagal membuat user");
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
       const { supabase } = await import("../supabaseClient");
-      const linkResult = await supabase.from("user_profiles").insert({
-        id: authData.user.id,
-        id_toko: form.value.tokoId,
-        role: "admin",
-        nama: form.value.nama,
-        email: form.value.email,
-      });
 
-      if (linkResult.error) throw linkResult.error;
+      // Ambil JWT session aktif agar Edge Function menerima token user (bukan anon key)
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) throw new Error("Sesi tidak valid, silakan login ulang");
+
+      // Panggil Edge Function — SERVICE_ROLE_KEY aman di server
+      const { data, error } = await supabase.functions.invoke(
+        "create-admin-user",
+        {
+          body: {
+            email: form.value.email,
+            password: form.value.password,
+            nama: form.value.nama,
+            tokoId: form.value.tokoId,
+          },
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        },
+      );
+
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || "Gagal membuat admin");
 
       try {
         await adminStore.fetchAdminAccounts();

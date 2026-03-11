@@ -79,19 +79,19 @@ const p = useAdminMenuTab(() => emit("refresh"));
           <div class="flex gap-2">
             <button
               @click="p.openDetailModal(prod)"
-              class="flex-1 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition text-sm font-medium"
+              class="flex-1 py-2 bg-info/10 text-info rounded-lg hover:bg-info/20 transition text-sm font-medium"
             >
               Detail
             </button>
             <button
               @click="p.openEditModal(prod)"
-              class="flex-1 py-2 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition text-sm font-medium"
+              class="flex-1 py-2 bg-warning/10 text-warning rounded-lg hover:bg-warning/20 transition text-sm font-medium"
             >
               Edit
             </button>
             <button
               @click="p.deleteProduct(prod.id)"
-              class="flex-1 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition text-sm font-medium"
+              class="flex-1 py-2 bg-danger/10 text-danger rounded-lg hover:bg-danger/20 transition text-sm font-medium"
             >
               Hapus
             </button>
@@ -284,7 +284,7 @@ const p = useAdminMenuTab(() => emit("refresh"));
                 p.showDetailModal.value = false;
                 p.openEditModal(p.viewingProduct.value!);
               "
-              class="flex-1 py-3 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition font-medium"
+              class="flex-1 py-3 bg-warning/10 text-warning rounded-xl hover:bg-warning/20 transition font-medium"
             >
               Edit Menu
             </button>

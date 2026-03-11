@@ -82,11 +82,11 @@ export function useAdminRiwayatTab() {
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "selesai":
-        return "bg-green-100 text-green-700";
+        return "bg-success/20 text-success";
       case "batal":
-        return "bg-red-100 text-red-700";
+        return "bg-danger/20 text-danger";
       case "menunggu":
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-warning/20 text-warning";
       default:
         return "bg-gray-100 text-gray-700";
     }
