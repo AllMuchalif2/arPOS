@@ -50,7 +50,9 @@ export function useAdminRiwayatTab() {
       const { data, error } = await supabase
         .from("pesanan")
         .select(
-          `id, nomor_pesanan, nama_pelanggan, status, total_harga, metode_pembayaran, created_at, id_kasir, id_meja`,
+          `id, nomor_pesanan, nama_pelanggan, status, total_harga, metode_pembayaran, created_at, id_kasir, id_meja,
+          meja:id_meja(nomor_meja),
+          kasir:id_kasir(nama)`,
         )
         .eq("id_toko", profile.id_toko)
         .gte("created_at", startOfDay.toISOString())
@@ -64,8 +66,8 @@ export function useAdminRiwayatTab() {
         if (p.status === "selesai") totalRp += p.total_harga;
         return {
           ...p,
-          kasir_nama: p.id_kasir ? "Kasir" : "Self-Order",
-          meja_nomor: p.id_meja ? "Meja" : "Takeaway",
+          kasir_nama: p.kasir?.nama ?? "Self-Order (QR)",
+          meja_nomor: p.meja?.nomor_meja ?? "Takeaway",
           detail_pesanan: [],
         };
       });
