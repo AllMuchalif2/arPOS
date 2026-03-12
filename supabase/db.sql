@@ -32,6 +32,7 @@ CREATE TABLE public.meja (
   created_at timestamp with time zone DEFAULT now(),
   deleted_at timestamp with time zone,
   status text DEFAULT 'tersedia'::text,
+  slug text,
   CONSTRAINT meja_pkey PRIMARY KEY (id),
   CONSTRAINT meja_id_toko_fkey FOREIGN KEY (id_toko) REFERENCES public.toko(id)
 );
@@ -84,6 +85,7 @@ CREATE TABLE public.toko (
   nama_toko text NOT NULL,
   created_at timestamp with time zone DEFAULT now(),
   deleted_at timestamp with time zone,
+  slug text UNIQUE,
   CONSTRAINT toko_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.user_profiles (

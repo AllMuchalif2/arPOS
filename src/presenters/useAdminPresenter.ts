@@ -13,7 +13,6 @@ export function useAdminPresenter() {
 
   const activeTab = ref("dashboard");
 
-  // Dashboard Stats
   const stats = ref({
     totalMenu: 0,
     totalMeja: 0,
@@ -45,16 +44,13 @@ export function useAdminPresenter() {
 
       if (!profile?.id_toko) return;
 
-      // Get today's income
       const startOfToday = new Date();
       startOfToday.setHours(0, 0, 0, 0);
 
-      // Get 7 days ago for the chart
       const startOf7DaysAgo = new Date();
       startOf7DaysAgo.setDate(startOf7DaysAgo.getDate() - 6);
       startOf7DaysAgo.setHours(0, 0, 0, 0);
 
-      // Parallel fetch for stats
       const [menuRes, mejaRes, kasirRes, incomeRes, weeklyIncomeRes] =
         await Promise.all([
           supabase
@@ -73,14 +69,12 @@ export function useAdminPresenter() {
             .eq("id_toko", profile.id_toko)
             .eq("role", "kasir")
             .is("deleted_at", null),
-          // Get today's income
           supabase
             .from("pesanan")
             .select("total_harga")
             .eq("id_toko", profile.id_toko)
             .eq("status", "selesai")
             .gte("created_at", startOfToday.toISOString()),
-          // Get last 7 days income
           supabase
             .from("pesanan")
             .select("total_harga, created_at")
@@ -100,23 +94,19 @@ export function useAdminPresenter() {
         );
       }
 
-      // Process weekly income map
       if (weeklyIncomeRes.data) {
-        // Initialize last 7 days with 0
         const incomeMap = new Map<string, number>();
         const labels = [];
 
         for (let i = 6; i >= 0; i--) {
           const d = new Date();
           d.setDate(d.getDate() - i);
-          // Get short day name for Indonesian locale like "Sen", "Sel"
           const dayName = d.toLocaleDateString("id-ID", { weekday: "short" });
-          const dateStr = d.toISOString().split("T")[0]; // YYYY-MM-DD
+          const dateStr = d.toISOString().split("T")[0];
           incomeMap.set(dateStr, 0);
           labels.push(dayName);
         }
 
-        // Aggregate orders
         weeklyIncomeRes.data.forEach((order) => {
           const orderDate = order.created_at.split("T")[0];
           if (incomeMap.has(orderDate)) {
@@ -129,7 +119,6 @@ export function useAdminPresenter() {
 
         const weeklyData = Array.from(incomeMap.values());
 
-        // Update chart stats
         chartData.value = {
           labels: labels,
           datasets: [
@@ -143,7 +132,6 @@ export function useAdminPresenter() {
         };
       }
 
-      // Also load ALL products for the Menu tab (no tersedia filter)
       await refreshProducts(profile.id_toko);
     } catch (error) {
       console.error("Error loading dashboard data", error);

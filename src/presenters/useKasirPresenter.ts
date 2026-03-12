@@ -38,11 +38,9 @@ export function useKasirPresenter() {
 
   const realtimeNotifications = ref<{ id: string; msg: string }[]>([]);
 
-  // Menu filter state
   const searchQuery = ref("");
   const selectedCategory = ref<string | null>(null);
 
-  // Filtered products based on search & category
   const filteredProducts = computed(() => {
     let prods = posStore.products;
     if (selectedCategory.value) {
@@ -55,7 +53,6 @@ export function useKasirPresenter() {
     return prods;
   });
 
-  // Realtime Subscription Placeholder
   let pesananSubscription: any = null;
 
   const totalCartAmount = computed(() => {
@@ -143,7 +140,6 @@ export function useKasirPresenter() {
         );
       }
 
-      // Reset form
       cart.value = [];
       customerName.value = "";
       selectedTable.value = "";
@@ -178,14 +174,12 @@ export function useKasirPresenter() {
           filter: `id_toko=eq.${profile.id_toko}`,
         },
         (payload) => {
-          // Notification for new order, particularly from QR Menu
           if (payload.new.status === "pending") {
             realtimeNotifications.value.push({
               id: payload.new.id,
               msg: `Pesanan Baru dari ${payload.new.nama_pelanggan || "Pelanggan"} (Total: Rp ${payload.new.total_harga.toLocaleString("id-ID")})`,
             });
 
-            // Auto remove notif after 10s
             setTimeout(() => {
               realtimeNotifications.value.shift();
             }, 10000);

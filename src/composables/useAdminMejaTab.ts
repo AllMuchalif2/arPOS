@@ -7,6 +7,7 @@ import { slugify } from "./useSlugify";
 export interface Meja {
   id: string;
   nomor_meja: string;
+  slug: string;
   status?: string;
 }
 
@@ -18,8 +19,8 @@ export function useAdminMejaTab() {
   const formLoading = ref(false);
   const form = ref({ id: "", nomor_meja: "", status: "tersedia" });
 
-  // QR state
   const namaToko = ref("");
+  const tokoSlug = ref("");
   const idToko = ref("");
   const showQrModal = ref(false);
   const qrMeja = ref<Meja | null>(null);
@@ -37,10 +38,13 @@ export function useAdminMejaTab() {
       idToko.value = profile.id_toko;
       const { data: toko } = await supabase
         .from("toko")
-        .select("nama_toko")
+        .select("nama_toko, slug")
         .eq("id", profile.id_toko)
         .single();
-      if (toko) namaToko.value = toko.nama_toko;
+      if (toko) {
+        namaToko.value = toko.nama_toko;
+        tokoSlug.value = toko.slug;
+      }
     } catch (e) {
       console.error("load toko error", e);
     }
@@ -103,6 +107,7 @@ export function useAdminMejaTab() {
           .from("meja")
           .update({
             nomor_meja: form.value.nomor_meja,
+            slug: slugify(form.value.nomor_meja),
             status: form.value.status,
           })
           .eq("id", form.value.id);
@@ -112,6 +117,7 @@ export function useAdminMejaTab() {
         const { error } = await supabase.from("meja").insert({
           id_toko: profile?.id_toko,
           nomor_meja: form.value.nomor_meja,
+          slug: slugify(form.value.nomor_meja),
           status: form.value.status,
         });
         if (error) throw error;
@@ -132,9 +138,7 @@ export function useAdminMejaTab() {
 
   const openQrModal = async (meja: Meja) => {
     qrMeja.value = meja;
-    const tokoSlug = slugify(namaToko.value);
-    const mejaSlug = slugify(meja.nomor_meja);
-    const url = `${window.location.origin}/menu/${tokoSlug}/${mejaSlug}`;
+    const url = `${window.location.origin}/menu/${tokoSlug.value}/${meja.slug}`;
     qrDataUrl.value = await QRCode.toDataURL(url, {
       width: 300,
       margin: 2,

@@ -49,7 +49,6 @@ export function useTenantRegistrationPresenter() {
     newTenantCreds.value = null;
 
     try {
-      // Generate password temporary di client agar aman (tidak dikirim balik dari server)
       const tempPassword = "P" + Math.random().toString(36).slice(-8) + "!";
 
       const { data, error } = await supabase.functions.invoke(
@@ -66,7 +65,7 @@ export function useTenantRegistrationPresenter() {
       const reg = registrations.value.find(r => r.id === id);
       newTenantCreds.value = {
         email: reg?.email || "Unknown",
-        password: tempPassword,   // Gunakan password yang digenerate di client
+        password: tempPassword,
         store: storeName,
       };
 

@@ -15,14 +15,13 @@ export const useAuthStore = defineStore("auth", () => {
     const { data } = await supabase.auth.getUser();
     user.value = data.user;
     if (user.value) {
-      // use maybeSingle so we don't get a 406 if the profile doesn't yet exist
       const { data: p, error } = await supabase
         .from("user_profiles")
         .select("role,id_toko")
         .eq("id", user.value.id)
         .maybeSingle();
       if (error && error.code !== "PGRST116") {
-        // any error other than 406 (no rows) we log
+        console.error("Error fetching user profile", error);
       }
       profile.value = p as UserProfile | null;
     } else {

@@ -20,6 +20,7 @@ export interface Produk {
 export interface Meja {
   id: string;
   nomor_meja: string;
+  slug?: string;
   status?: string;
 }
 

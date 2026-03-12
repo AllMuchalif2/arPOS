@@ -24,7 +24,6 @@ export function useLoginPresenter() {
 
       if (error) throw error;
 
-      // load profile and redirect based on role
       await auth.loadUser();
       const role = auth.profile?.role;
       if (role === "superadmin") {

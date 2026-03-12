@@ -47,13 +47,10 @@ export function useSuperAdminAdminManagement() {
 
       const { supabase } = await import("../supabaseClient");
 
-      // Ambil JWT session aktif agar Edge Function menerima token user (bukan anon key)
       const {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) throw new Error("Sesi tidak valid, silakan login ulang");
-
-      // Panggil Edge Function — SERVICE_ROLE_KEY aman di server
       const { data, error } = await supabase.functions.invoke(
         "create-admin-user",
         {
@@ -75,7 +72,6 @@ export function useSuperAdminAdminManagement() {
       try {
         await adminStore.fetchAdminAccounts();
       } catch (e) {
-        // silent
       }
 
       closeModal();

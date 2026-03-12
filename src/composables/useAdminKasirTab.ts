@@ -61,14 +61,11 @@ export function useAdminKasirTab() {
     formLoading.value = true;
 
     try {
-      // Ambil JWT session aktif agar Edge Function menerima token user (bukan anon key)
       const {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) throw new Error("Sesi tidak valid, silakan login ulang");
 
-      // Panggil Edge Function — SERVICE_ROLE_KEY aman di server
-      // id_toko diambil dari profil caller di server, tidak bisa dimanipulasi dari client
       const { data, error } = await supabase.functions.invoke(
         "create-kasir-user",
         {

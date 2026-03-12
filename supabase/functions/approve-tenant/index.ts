@@ -65,10 +65,20 @@ serve(async (req) => {
     if (authError) throw authError;
     const newUserId = authData.user.id;
 
-    // 5. Buatkan Toko Baru
+    // 5. Buatkan Toko Baru dengan Slug
+    const tokoSlug = registration.store_name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+
     const { data: tokoData, error: tokoError } = await supabaseAdmin
       .from("toko")
-      .insert({ nama_toko: registration.store_name })
+      .insert({ 
+        nama_toko: registration.store_name,
+        slug: tokoSlug 
+      })
       .select()
       .single();
 

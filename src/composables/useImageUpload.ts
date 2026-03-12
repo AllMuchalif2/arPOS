@@ -11,7 +11,6 @@ export function useImageUpload() {
     uploadError.value = null;
 
     try {
-      // 1. Compress Image (Max 200KB)
       const options = {
         maxSizeMB: 0.2, // 200KB
         maxWidthOrHeight: 800,
@@ -20,12 +19,10 @@ export function useImageUpload() {
 
       const compressedFile = await imageCompression(file, options);
 
-      // 2. Generate a unique file name
       const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
       const filePath = `public/${fileName}`;
 
-      // 3. Upload to Supabase Storage ('foto_produk' bucket)
       const { error: uploadErr } = await supabase.storage
         .from("foto_produk")
         .upload(filePath, compressedFile, {
@@ -37,7 +34,6 @@ export function useImageUpload() {
         throw uploadErr;
       }
 
-      // 4. Get Public URL
       const { data } = supabase.storage
         .from("foto_produk")
         .getPublicUrl(filePath);

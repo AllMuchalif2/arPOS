@@ -36,7 +36,6 @@ export function useKasirDashboardPresenter() {
   const activeTab = ref<"ringkasan" | "pesanan" | "meja" | "menu">("ringkasan");
   const loading = ref(false);
 
-  // ---- Ringkasan ----
   const pesananHariIni = ref<PesananRingkasan[]>([]);
 
   const totalPesanan = computed(() => pesananHariIni.value.length);
@@ -72,7 +71,6 @@ export function useKasirDashboardPresenter() {
     if (data) pesananHariIni.value = data;
   };
 
-  // ---- Meja ----
   const mejaList = ref<Meja[]>([]);
 
   const fetchMeja = async () => {
@@ -102,7 +100,6 @@ export function useKasirDashboardPresenter() {
     }
   };
 
-  // ---- Menu ----
   const menuList = ref<MenuItem[]>([]);
 
   const fetchMenuList = async () => {
@@ -134,7 +131,6 @@ export function useKasirDashboardPresenter() {
     }
   };
 
-  // ---- Lifecycle ----
   onMounted(async () => {
     loading.value = true;
     await Promise.all([fetchRingkasan(), fetchMeja(), fetchMenuList()]);
@@ -150,16 +146,13 @@ export function useKasirDashboardPresenter() {
     router,
     activeTab,
     loading,
-    // ringkasan
     pesananHariIni,
     totalPesanan,
     totalPendapatan,
     totalDineIn,
     totalTakeaway,
-    // meja
     mejaList,
     toggleMeja,
-    // menu
     menuList,
     toggleMenu,
     logout,
