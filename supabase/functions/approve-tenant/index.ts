@@ -8,28 +8,29 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Tangani preflight OPTIONS request untuk CORS
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    let body;
+    // 3. Ambil payload dari request body (Sekarang menerima password dari client)
+    let body: { registrationId: string; password?: string };
     try {
       body = await req.json();
-    } catch (parseError) {
-      console.error("Gagal parse JSON:", parseError);
-      throw new Error("Format payload request tidak valid (Bukan JSON)");
+    } catch {
+      return new Response(JSON.stringify({ error: "Format payload tidak valid" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
-    const registrationId = body?.registrationId;
-    console.log("Mencoba proses registrasi dengan ID:", registrationId);
+    const { registrationId, password: clientPassword } = body;
 
     if (!registrationId) {
-      throw new Error("registrationId tidak diberikan dalam payload body");
+      throw new Error("registrationId wajib diisi");
     }
 
-    // 1. Buat client supabase dengan SERVICE ROLE KEY untuk hak akses Admin
+    // 1. Buat client supabase dengan SERVICE ROLE KEY
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -50,21 +51,21 @@ serve(async (req) => {
       throw new Error("Registrasi ini sudah diproses sebelumnya");
     }
 
-    // 3. Buatkan Auth User (Tenant Admin)
-    // Password sementara: Kita buat random atau standar
-    const tempPassword = "P" + Math.random().toString(36).slice(-8) + "!";
+    // 3. Gunakan password dari client atau generate jika tidak ada
+    const finalPassword = clientPassword || "P" + Math.random().toString(36).slice(-8) + "!";
 
+    // 4. Buatkan Auth User
     const { data: authData, error: authError } =
       await supabaseAdmin.auth.admin.createUser({
         email: registration.email,
-        password: tempPassword,
-        email_confirm: true, // Otomatis terkonfirmasi
+        password: finalPassword,
+        email_confirm: true,
       });
 
     if (authError) throw authError;
     const newUserId = authData.user.id;
 
-    // 4. Buatkan Toko Baru
+    // 5. Buatkan Toko Baru
     const { data: tokoData, error: tokoError } = await supabaseAdmin
       .from("toko")
       .insert({ nama_toko: registration.store_name })
@@ -74,9 +75,7 @@ serve(async (req) => {
     if (tokoError) throw tokoError;
     const newTokoId = tokoData.id;
 
-    // 5. Buat / Update Profile User menjadi "admin" dan set toko_id
-    // Biasanya trigger authentication Supabase langsung insert ke `user_profiles`.
-    // Kita gunakan upsert (atau update jika sudah di-insert trigger) untuk memasukkan role & toko_id.
+    // 6. Buat / Update Profile User
     const { error: profileError } = await supabaseAdmin
       .from("user_profiles")
       .upsert(
@@ -91,25 +90,25 @@ serve(async (req) => {
       );
 
     if (profileError) {
-      console.warn("Gagal update user_profiles:", profileError);
-      throw new Error(`Gagal membuat profil user: ${profileError.message}`);
+      await supabaseAdmin.auth.admin.deleteUser(newUserId);
+      throw profileError;
     }
 
-    // 6. Update status registrasi menjadi approved
+    // 7. Update status registrasi
     await supabaseAdmin
       .from("tenant_registrations")
       .update({ status: "approved" })
       .eq("id", registrationId);
 
-    // 8. Berikan respons sukses
+    // 8. Respons Sukses - TIDAK MENGIRIM PASSWORD BALIK
     return new Response(
       JSON.stringify({
         success: true,
         message: "Tenant berhasil di-approve",
-        credentials: {
+        data: {
           email: registration.email,
-          temporaryPassword: tempPassword,
-        },
+          toko: registration.store_name,
+        }
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
