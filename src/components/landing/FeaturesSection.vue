@@ -2,7 +2,7 @@
   <section id="features" class="bg-base py-20 border-y border-secondary">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-2xl mx-auto mb-16">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Fitur Kasir arPOS</h2>
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Fitur Kasir veePOS</h2>
         <p class="text-gray-600">
           Sederhana dan mudah digunakan untuk keperluan toko harian Anda.
         </p>

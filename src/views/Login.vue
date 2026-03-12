@@ -22,8 +22,8 @@ const { email, password, loading, errorMsg, handleLogin } = useLoginPresenter();
     >
       <div class="text-center mb-8">
         <img
-          src="/arpos-logo.png"
-          alt="arPOS Logo"
+          src="/veepos.png"
+          alt="veePOS Logo"
           class="w-16 h-16 rounded-lg mx-auto"
         />
         <h1 class="text-2xl font-bold text-gray-800">

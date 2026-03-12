@@ -5,18 +5,18 @@
     >
       <div class="flex items-center gap-2">
         <img
-          src="/arpos-logo.png"
-          alt="arPOS Logo"
+          src="/veepos.png"
+          alt="veePOS Logo"
           class="w-8 h-8 rounded-lg"
         />
-
-        <span class="font-bold text-gray-900"
-          >ar<span class="text-primary">POS</span></span
-        >
       </div>
-      <p class="text-gray-500 text-sm">
-        © {{ new Date().getFullYear() }} arPOS. Hak Cipta Dilindungi.
-      </p>
+        <p class="text-gray-500 text-sm mb-6 max-w-xs">
+          veePOS - Solusi kasir modern untuk pertumbuhan bisnis cafe dan
+          restoran Anda.
+        </p>
+        <p class="text-gray-500 text-sm">
+          © {{ new Date().getFullYear() }} veePOS. Hak Cipta Dilindungi.
+        </p>
       <div class="flex gap-4 text-sm font-medium text-gray-600">
         <a href="#" class="hover:text-primary transition-colors"
           >Pusat Bantuan</a

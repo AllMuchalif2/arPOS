@@ -56,7 +56,7 @@ const {
           >
             <i class="bx bx-store-alt text-xl"></i>
           </div>
-          <h1 class="text-xl font-bold text-gray-800">Cafe POS</h1>
+          <h1 class="text-xl font-bold text-gray-800">veePOS</h1>
         </div>
 
         <div class="flex items-center gap-3">

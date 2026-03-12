@@ -4,10 +4,10 @@
       class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between"
     >
       <div class="flex items-center gap-2">
-        <img src="/arpos-logo.png" alt="arPOS Logo" class="w-8 h-8 rounded-lg" />
-        <span class="text-xl font-bold text-gray-900 tracking-tight"
-          >ar<span class="text-primary">POS</span></span
-        >
+        <img src="/veepos.png" alt="veePOS Logo" class="w-8 h-8 rounded-lg" />
+        <span class="text-xl font-bold text-gray-900 tracking-tight">
+          veePOS
+        </span>
       </div>
       <div class="flex items-center gap-4">
         <router-link

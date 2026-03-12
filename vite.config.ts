@@ -13,8 +13,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
       manifest: {
-        name: "arPOS",
-        short_name: "arPOS",
+        name: "veePOS",
+        short_name: "veePOS",
         description: "Multi-Tenant Cafe Point of Sale System",
         theme_color: "#FAF7F3",
         background_color: "#FAF7F3",
@@ -23,17 +23,17 @@ export default defineConfig({
         id: "/",
         icons: [
           {
-            src: "arpos-192.png",
+            src: "veepos192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "arpos-512.png",
+            src: "veepos.png",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "arpos-512.png",
+            src: "veepos.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
