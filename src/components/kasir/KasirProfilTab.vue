@@ -1,72 +1,56 @@
 <script setup lang="ts">
-import { useAdminPengaturanTab } from "../../composables/useAdminPengaturanTab";
+import { useAuthStore } from "../../stores/authStore";
 import { useChangePassword } from "../../composables/useChangePassword";
 
-const p = useAdminPengaturanTab();
+const auth = useAuthStore();
 const cp = useChangePassword();
 </script>
 
 <template>
-  <div class="space-y-6 max-w-2xl pb-12">
+  <div class="space-y-6 max-w-2xl mx-auto pb-12">
     <div>
-      <h2 class="text-xl font-bold text-gray-800">Pengaturan Toko</h2>
+      <h2 class="text-xl font-bold text-gray-800">Profil Saya</h2>
       <p class="text-sm text-gray-500 mt-1">
-        Ubah identitas dan preferensi dasar toko Anda.
+        Kelola informasi akun dan keamanan Anda.
       </p>
     </div>
 
-    <div v-if="p.loading.value" class="flex justify-center p-12">
-      <i class="bx bx-loader-alt bx-spin text-4xl text-primary"></i>
-    </div>
-
-    <div
-      v-else
-      class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8"
-    >
-      <form @submit.prevent="p.savePengaturan()" class="space-y-6">
+    <!-- Akun Info -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+      <div class="flex items-center gap-4 mb-6">
+        <div
+          class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-2xl font-bold"
+        >
+          {{ auth.profile?.nama?.charAt(0) || "K" }}
+        </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2"
-            >Nama Toko</label
-          >
-          <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
-            >
-              <i class="bx bx-store-alt text-gray-400 text-lg"></i>
-            </div>
-            <input
-              v-model="p.form.value.nama_toko"
-              type="text"
-              required
-              class="w-full border border-gray-200 rounded-xl pl-11 pr-4 py-3 focus:ring-2 focus:ring-primary outline-none transition text-gray-800 font-medium"
-            />
-          </div>
-          <p class="mt-2 text-xs text-gray-500">
-            Nama toko Anda akan terlihat pada nota pembelian pelanggan.
+          <h3 class="text-lg font-bold text-gray-800">
+            {{ auth.profile?.nama || "Kasir" }}
+          </h3>
+          <p class="text-gray-500 text-sm capitalize">
+            Role: {{ auth.profile?.role }}
           </p>
         </div>
-        <div class="pt-4 border-t border-gray-100">
-          <button
-            type="submit"
-            :disabled="p.isSaving.value"
-            class="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-[#c99188] text-white rounded-xl transition font-medium flex justify-center items-center shadow-sm"
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1"
+            >Email</label
           >
-            <i
-              v-if="p.isSaving.value"
-              class="bx bx-loader-alt bx-spin mr-2"
-            ></i>
-            <i v-else class="bx bx-save mr-2"></i>
-            {{ p.isSaving.value ? "Menyimpan..." : "Simpan Perubahan" }}
-          </button>
+          <div class="flex items-center gap-2 text-gray-700 font-medium">
+            <i class="bx bx-envelope text-gray-400"></i>
+            {{ auth.user?.email }}
+          </div>
         </div>
-      </form>
+      </div>
     </div>
 
     <!-- Password Change Section -->
     <div class="pt-6">
       <h2 class="text-xl font-bold text-gray-800">Keamanan Akun</h2>
       <p class="text-sm text-gray-500 mt-1">
-        Perbarui password Anda secara berkala untuk menjaga keamanan akun.
+        Ganti password Anda secara berkala.
       </p>
     </div>
 
@@ -117,7 +101,7 @@ const cp = useChangePassword();
           <button
             type="submit"
             :disabled="cp.isUpdating.value"
-            class="w-full sm:w-auto px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl transition font-medium flex justify-center items-center shadow-sm"
+            class="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary/80 text-white rounded-xl transition font-medium flex justify-center items-center shadow-sm"
           >
             <i
               v-if="cp.isUpdating.value"

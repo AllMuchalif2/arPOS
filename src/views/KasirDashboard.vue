@@ -4,6 +4,7 @@ import KasirRingkasanTab from "../components/kasir/KasirRingkasanTab.vue";
 import KasirMejaTab from "../components/kasir/KasirMejaTab.vue";
 import KasirMenuTab from "../components/kasir/KasirMenuTab.vue";
 import KasirPesananTab from "../components/kasir/KasirPesananTab.vue";
+import KasirProfilTab from "../components/kasir/KasirProfilTab.vue";
 
 const {
   router,
@@ -72,6 +73,7 @@ const {
             { id: 'pesanan', label: 'Pesanan' },
             { id: 'meja', label: 'Meja' },
             { id: 'menu', label: 'Menu' },
+            { id: 'profil', label: 'Profil' },
           ]"
           :key="tab.id"
           @click="activeTab = tab.id as any"
@@ -115,6 +117,8 @@ const {
         :menu-list="menuList"
         @toggle="toggleMenu"
       />
+
+      <KasirProfilTab v-if="activeTab === 'profil'" />
     </main>
   </div>
 </template>

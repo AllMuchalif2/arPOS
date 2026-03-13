@@ -33,7 +33,7 @@ export function useKasirDashboardPresenter() {
   const router = useRouter();
   const auth = useAuthStore();
 
-  const activeTab = ref<"ringkasan" | "pesanan" | "meja" | "menu">("ringkasan");
+  const activeTab = ref<"ringkasan" | "pesanan" | "meja" | "menu" | "profil">("ringkasan");
   const loading = ref(false);
 
   const pesananHariIni = ref<PesananRingkasan[]>([]);
