@@ -46,31 +46,38 @@
         </div>
       </div>
 
-      <!-- Mockup -->
-      <div class="relative">
-        <div
-          class="absolute inset-0 bg-secondary rounded-3xl transform rotate-3 scale-105 opacity-50 blur-xl"
-        ></div>
-        <div
-          class="relative bg-white rounded-2xl shadow-xl border border-secondary p-2 overflow-hidden aspect-4/3 flex flex-col"
-        >
-          <div
-            class="border-b border-gray-100 p-3 flex items-center gap-2 bg-base"
-          >
-            <div class="flex gap-1.5">
-              <div class="w-3 h-3 rounded-full bg-red-400"></div>
-              <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-              <div class="w-3 h-3 rounded-full bg-green-400"></div>
-            </div>
-            <div
-              class="mx-auto w-1/2 h-4 bg-secondary bg-opacity-40 rounded-full"
-            ></div>
+      <!-- Feature Highlights -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-secondary hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 bg-primary/20 text-primary rounded-xl flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
           </div>
-          <div
-            class="grow bg-base flex flex-col items-center justify-center text-primary font-medium opacity-80"
-          >
-            [ Tampilan Dashboard Transaksi POS ]
+          <h3 class="font-bold text-gray-900 mb-2">Kasir Cepat</h3>
+          <p class="text-sm text-gray-600">Proses transaksi hitungan detik.</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-secondary hover:shadow-md transition-shadow transform translate-y-6">
+          <div class="w-10 h-10 bg-info/20 text-info rounded-xl flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
           </div>
+          <h3 class="font-bold text-gray-900 mb-2">Laporan Realtime</h3>
+          <p class="text-sm text-gray-600">Pantau omzet kapan saja.</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-secondary hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 bg-success/20 text-success rounded-xl flex items-center justify-center mb-4">
+             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2">Menu QR Code</h3>
+          <p class="text-sm text-gray-600">Pelanggan pesan dari meja.</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-secondary hover:shadow-md transition-shadow transform translate-y-6">
+          <div class="w-10 h-10 bg-warning/20 text-warning rounded-xl flex items-center justify-center mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2">Mode Offline</h3>
+          <p class="text-sm text-gray-600">Tetap jalan tanpa internet.</p>
         </div>
       </div>
     </div>

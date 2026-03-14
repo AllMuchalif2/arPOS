@@ -13,7 +13,6 @@ serve(async (req) => {
   }
 
   try {
-    // 3. Ambil payload dari request body (Sekarang menerima password dari client)
     let body: { registrationId: string; password?: string };
     try {
       body = await req.json();
@@ -30,13 +29,10 @@ serve(async (req) => {
       throw new Error("registrationId wajib diisi");
     }
 
-    // 1. Buat client supabase dengan SERVICE ROLE KEY
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
-
-    // 2. Ambil data registrasi
     const { data: registration, error: regError } = await supabaseAdmin
       .from("tenant_registrations")
       .select("*")
@@ -51,10 +47,8 @@ serve(async (req) => {
       throw new Error("Registrasi ini sudah diproses sebelumnya");
     }
 
-    // 3. Gunakan password dari client atau generate jika tidak ada
     const finalPassword = clientPassword || "P" + Math.random().toString(36).slice(-8) + "!";
 
-    // 4. Buatkan Auth User
     const { data: authData, error: authError } =
       await supabaseAdmin.auth.admin.createUser({
         email: registration.email,
@@ -65,7 +59,6 @@ serve(async (req) => {
     if (authError) throw authError;
     const newUserId = authData.user.id;
 
-    // 5. Buatkan Toko Baru dengan Slug
     const tokoSlug = registration.store_name
       .toLowerCase()
       .trim()
@@ -85,7 +78,6 @@ serve(async (req) => {
     if (tokoError) throw tokoError;
     const newTokoId = tokoData.id;
 
-    // 6. Buat / Update Profile User
     const { error: profileError } = await supabaseAdmin
       .from("user_profiles")
       .upsert(
@@ -104,13 +96,10 @@ serve(async (req) => {
       throw profileError;
     }
 
-    // 7. Update status registrasi
     await supabaseAdmin
       .from("tenant_registrations")
       .update({ status: "approved" })
       .eq("id", registrationId);
-
-    // 8. Respons Sukses - TIDAK MENGIRIM PASSWORD BALIK
     return new Response(
       JSON.stringify({
         success: true,

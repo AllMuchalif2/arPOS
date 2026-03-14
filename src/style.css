@@ -11,7 +11,6 @@
   --color-warning: #f0c419;
 }
 
-/* Fallback utilities jika Tailwind v4 tidak men-generate otomatis dari @theme untuk nama tsb */
 .bg-base {
   background-color: var(--color-base);
 }
