@@ -18,7 +18,7 @@
         <a
           href="#register"
           class="bg-primary hover-bg-primary text-white px-5 py-2 rounded-full font-medium transition-colors shadow-sm"
-          >Daftar Toko</a
+          >Registrasi</a
         >
       </div>
     </div>

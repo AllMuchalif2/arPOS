@@ -27,7 +27,7 @@ const { email, password, loading, errorMsg, handleLogin } = useLoginPresenter();
           class="w-16 h-16 rounded-lg mx-auto"
         />
         <h1 class="text-2xl font-bold text-gray-800">
-          ar<span class="text-primary">POS</span>
+          vee<span class="text-primary">POS</span>
         </h1>
         <p class="text-sm text-gray-500 mt-2">Sign in to your POS Dashboard</p>
       </div>

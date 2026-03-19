@@ -6,16 +6,16 @@
     <div
       class="absolute inset-0 bg-primary transform -skew-y-3 origin-top-left -z-10 opacity-20"
     ></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       <div
         class="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-secondary"
       >
         <!-- Info Side -->
         <div
-          class="bg-secondary bg-opacity-20 p-10 md:w-2/5 flex flex-col justify-center border-r border-secondary"
+          class="bg-secondary bg-opacity-20 p-8 md:p-10 md:w-[45%] flex flex-col justify-center border-r md:border-b-0 border-b border-secondary"
         >
           <h3 class="text-2xl font-bold text-gray-900 mb-4">Daftar Sekarang</h3>
-          <p class="text-gray-600 mb-8">
+          <p class="text-gray-900 mb-8 text-sm">
             Bergabunglah dengan veePOS dan mulai kelola cafe/resto Anda lebih
             rapi.
           </p>
@@ -23,7 +23,7 @@
           <ul class="space-y-4">
             <li class="flex items-start gap-3">
               <svg
-                class="w-5 h-5 text-primary mt-0.5"
+                class="w-5 h-5 text-primary mt-0.5 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -39,7 +39,7 @@
             </li>
             <li class="flex items-start gap-3">
               <svg
-                class="w-5 h-5 text-primary mt-0.5"
+                class="w-5 h-5 text-primary mt-0.5 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -55,7 +55,7 @@
             </li>
             <li class="flex items-start gap-3">
               <svg
-                class="w-5 h-5 text-primary mt-0.5"
+                class="w-5 h-5 text-primary mt-0.5 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -73,8 +73,13 @@
         </div>
 
         <!-- Form Side -->
-        <div class="p-10 md:w-3/5 bg-white">
-          <form @submit.prevent="submitRegistration" class="space-y-5">
+        <div
+          class="p-8 md:p-10 md:w-[55%] bg-white flex flex-col justify-center items-center"
+        >
+          <form
+            @submit.prevent="submitRegistration"
+            class="space-y-5 w-full max-w-[300px]"
+          >
             <div
               v-if="errorMsg"
               class="p-4 bg-danger/10 text-danger rounded-xl mb-4 text-sm font-medium border border-danger/20"
@@ -262,13 +267,17 @@ const submitRegistration = async () => {
       if (message.includes("pending") || message.includes("sudah")) {
         errorMsg.value =
           "Email atau nomor ini masih dalam antrean verifikasi. Mohon tunggu proses sebelumnya.";
-      } else if (message.includes("terlalu banyak") || message.includes("lalu lintas")) {
+      } else if (
+        message.includes("terlalu banyak") ||
+        message.includes("lalu lintas")
+      ) {
         errorMsg.value =
           "Pendaftaran dibatasi untuk mencegah spam. Coba lagi beberapa saat.";
       } else if (message.includes("captcha")) {
         errorMsg.value = "Verifikasi captcha gagal. Silakan coba lagi.";
       } else {
-        errorMsg.value = "Terjadi kesalahan saat pendaftaran. Silakan coba lagi.";
+        errorMsg.value =
+          "Terjadi kesalahan saat pendaftaran. Silakan coba lagi.";
       }
       return;
     }

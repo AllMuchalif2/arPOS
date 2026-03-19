@@ -54,22 +54,5 @@ defineProps<{
       </div>
     </div>
 
-    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <h3 class="text-lg font-bold text-gray-800 mb-4">Aksi Cepat</h3>
-      <div class="flex gap-3">
-        <button
-          @click="onAddStore"
-          class="bg-primary text-white px-6 py-3 rounded-xl hover:bg-[#c99188] transition shadow"
-        >
-          <i class="bx bx-plus mr-1"></i> Tambah Toko
-        </button>
-        <button
-          @click="onAddAdmin"
-          class="bg-secondary text-gray-800 px-6 py-3 rounded-xl hover:bg-[#c2aa96] transition shadow"
-        >
-          <i class="bx bx-user-plus mr-1"></i> Buat Akun Admin
-        </button>
-      </div>
-    </div>
   </div>
 </template>
