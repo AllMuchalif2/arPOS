@@ -56,27 +56,23 @@ export const usePosStore = defineStore("pos", () => {
   const isSyncing = ref(false);
   const isLoading = ref(false);
 
-  // Listen to network changes
   window.addEventListener("online", () => {
     isOnline.value = true;
-    syncPendingOrders(); // auto-sync when back online
+    syncPendingOrders();
   });
   window.addEventListener("offline", () => {
     isOnline.value = false;
   });
 
-  // Load from Supabase OR from LocalForage if offline
   const fetchMenu = async () => {
     isLoading.value = true;
     try {
       if (isOnline.value) {
-        // Get current user's toko first
         const authStore = useAuthStore();
         const idToko = authStore.profile?.id_toko;
 
         if (!idToko) throw new Error("Profil toko tidak ditemukan");
 
-        // Fetch only this store's data
         const [catRes, prodRes, tableRes] = await Promise.all([
           supabase
             .from("kategori")
@@ -103,7 +99,6 @@ export const usePosStore = defineStore("pos", () => {
         if (prodRes.data) products.value = prodRes.data;
         if (tableRes.data) tables.value = tableRes.data;
 
-        // Cache to LocalForage (strip proxies to avoid DataCloneError)
         await localforage.setItem(
           "pos_categories",
           JSON.parse(JSON.stringify(categories.value)),
@@ -117,7 +112,6 @@ export const usePosStore = defineStore("pos", () => {
           JSON.parse(JSON.stringify(tables.value)),
         );
       } else {
-        // Load from cache
         const cachedCat =
           await localforage.getItem<Kategori[]>("pos_categories");
         const cachedProd = await localforage.getItem<Produk[]>("pos_products");
@@ -129,7 +123,6 @@ export const usePosStore = defineStore("pos", () => {
       }
     } catch (error) {
       console.error("Error fetching menu:", error);
-      // Fallback to cache on error
       const cachedProd = await localforage.getItem<Produk[]>("pos_products");
       if (cachedProd) products.value = cachedProd;
     } finally {
@@ -137,7 +130,6 @@ export const usePosStore = defineStore("pos", () => {
     }
   };
 
-  // Load pending orders from cache on startup
   const loadPendingOrders = async () => {
     const cached =
       await localforage.getItem<PendingOrder[]>("pos_pending_orders");
@@ -147,24 +139,48 @@ export const usePosStore = defineStore("pos", () => {
     }
   };
 
-  // Save an order (either straight to Supabase if online, or to queue if offline)
+  const saveOffline = async (order: PendingOrder) => {
+    order.id = "TRX-" + Date.now();
+    order.created_at = new Date().toISOString();
+    
+    // Hapus proxy Reactivity Vue agar bisa disimpan ke IndexedDB
+    const plainOrder = JSON.parse(JSON.stringify(order));
+    pendingOrders.value.push(plainOrder);
+    
+    await localforage.setItem(
+      "pos_pending_orders",
+      JSON.parse(JSON.stringify(pendingOrders.value))
+    );
+    return { success: true, offline: true };
+  };
+
   const submitOrder = async (order: PendingOrder) => {
     if (isOnline.value) {
-      return await sendOrderToSupabase(order);
+      try {
+        return await sendOrderToSupabase(order);
+      } catch (err: any) {
+        // Gabungkan seluruh pesan error jadi string agar pasti ketahuan jika itu masalah koneksi
+        const errMsg = String(err?.message || "") + String(err?.details || "") + String(err);
+        
+        if (
+          errMsg.includes("Failed to fetch") || 
+          errMsg.includes("NetworkError") || 
+          errMsg.includes("offline") ||
+          errMsg.includes("network")
+        ) {
+          console.warn("Internet ngadat (atau ter-block CORS/Fetch), paksa beralih ke simpan offline...", errMsg);
+          return await saveOffline(order);
+        }
+        
+        throw err;
+      }
     } else {
-      // Save offline
-      order.id = "TRX-" + Date.now();
-      order.created_at = new Date().toISOString();
-      pendingOrders.value.push(order);
-      await localforage.setItem("pos_pending_orders", pendingOrders.value);
-      return { success: true, offline: true };
+      return await saveOffline(order);
     }
   };
 
-  // Actual Supabase submission logic inside RPC or individual tables
   const sendOrderToSupabase = async (order: PendingOrder) => {
     try {
-      // Get current user's id_toko and id_kasir
       const authStore = useAuthStore();
       const idKasir = authStore.user?.id;
       const idToko = authStore.profile?.id_toko;
@@ -187,7 +203,6 @@ export const usePosStore = defineStore("pos", () => {
       if (error) throw error;
       if (!data.success) throw new Error("RPC transaction failed");
 
-      // Update local meja status for immediate reactivity
       if (order.tipe_pesanan === "dine_in" && order.id_meja) {
         const table = tables.value.find((t) => t.id === order.id_meja);
         if (table) table.status = "terisi";
@@ -217,7 +232,10 @@ export const usePosStore = defineStore("pos", () => {
     }
 
     pendingOrders.value = failedOrders;
-    await localforage.setItem("pos_pending_orders", pendingOrders.value);
+    await localforage.setItem(
+      "pos_pending_orders",
+      JSON.parse(JSON.stringify(pendingOrders.value))
+    );
     isSyncing.value = false;
   };
 
