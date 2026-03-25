@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { useTenantRegistrationPresenter } from "../../presenters/useTenantRegistrationPresenter";
+import { swalSuccess } from "../../composables/useSwal";
 
 const p = useTenantRegistrationPresenter();
+
+const copyToClipboard = async (text: string, label: string) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    swalSuccess("Tersalin!", `${label} berhasil disalin.`);
+  } catch (err) {
+    console.error("Gagal menyalin", err);
+  }
+};
 </script>
 
 <template>
@@ -38,35 +48,45 @@ const p = useTenantRegistrationPresenter();
       <div
         class="bg-white p-4 rounded-lg border border-success/20 text-sm shadow-sm"
       >
-        <p class="text-slate-500 mb-3">
-          <i class="bx bx-info-circle mr-1 align-middle text-success"></i>
-          <span class="align-middle font-medium"
-            >Beri tahu pendaftar detail akun mereka:</span
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+          <p class="text-slate-500 m-0">
+            <i class="bx bx-info-circle mr-1 align-middle text-success"></i>
+            <span class="align-middle font-medium">Beri tahu pendaftar detail akun mereka:</span>
+          </p>
+          <button
+            @click="copyToClipboard(`Email: ${p.newTenantCreds.value?.email}\nPassword: ${p.newTenantCreds.value?.password}`, 'Info Akun')"
+            class="text-xs flex items-center gap-1.5 bg-success text-white hover:bg-success-dark px-3 py-1.5 rounded-lg transition-all shadow-sm active:scale-95 font-medium ml-auto sm:ml-0"
+            title="Salin semua kredensial"
           >
-        </p>
+            <i class="bx bx-copy"></i>
+            Salin Info
+          </button>
+        </div>
         <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
           <div>
-            <span
-              class="text-slate-400 text-xs uppercase tracking-wider block mb-1"
-              >Email Admin</span
-            >
-            <span class="font-medium text-slate-800 flex items-center gap-2">
-              <i class="bx bx-envelope text-slate-400"></i>
-              {{ p.newTenantCreds.value.email }}
-            </span>
+            <span class="text-slate-400 text-xs uppercase tracking-wider block mb-1">Email Admin</span>
+            <div class="flex items-center gap-2 group">
+              <span class="font-medium text-slate-800 flex items-center gap-2">
+                <i class="bx bx-envelope text-slate-400"></i>
+                {{ p.newTenantCreds.value.email }}
+              </span>
+              <button @click="copyToClipboard(p.newTenantCreds.value?.email || '', 'Email')" class="text-slate-400 hover:text-primary transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100" title="Salin Email">
+                <i class="bx bx-copy"></i>
+              </button>
+            </div>
           </div>
           <div class="h-px sm:h-auto sm:w-px bg-slate-100"></div>
           <div>
-            <span
-              class="text-slate-400 text-xs uppercase tracking-wider block mb-1"
-              >Password Sementara</span
-            >
-            <span
-              class="font-mono font-medium text-slate-800 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded flex items-center gap-2"
-            >
-              <i class="bx bx-lock-alt text-slate-400"></i>
-              {{ p.newTenantCreds.value.password }}
-            </span>
+            <span class="text-slate-400 text-xs uppercase tracking-wider block mb-1">Password Sementara</span>
+            <div class="flex items-center gap-2 group">
+              <span class="font-mono font-medium text-slate-800 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded flex items-center gap-2">
+                <i class="bx bx-lock-alt text-slate-400"></i>
+                {{ p.newTenantCreds.value.password }}
+              </span>
+              <button @click="copyToClipboard(p.newTenantCreds.value?.password || '', 'Password')" class="text-slate-400 hover:text-primary transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100" title="Salin Password">
+                <i class="bx bx-copy"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
