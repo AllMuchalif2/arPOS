@@ -31,6 +31,10 @@ export function useAdminRiwayatTab() {
   const filterDate = ref(new Date().toISOString().split("T")[0]);
   const stats = ref({ totalTransaksi: 0, totalPendapatan: 0 });
 
+  // Modal State
+  const showDetailModal = ref(false);
+  const selectedPesanan = ref<Pesanan | null>(null);
+
   const loadRiwayat = async () => {
     loading.value = true;
     try {
@@ -78,20 +82,22 @@ export function useAdminRiwayatTab() {
     }
   };
 
+  const statusOptions = ["pending", "diproses", "selesai", "dibatalkan"];
+
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "selesai":
         return "bg-success/20 text-success";
-      case "batal":
+      case "dibatalkan":
         return "bg-danger/20 text-danger";
-      case "menunggu":
+      case "pending":
         return "bg-warning/20 text-warning";
+      case "diproses":
+        return "bg-info/20 text-info";
       default:
         return "bg-gray-100 text-gray-700";
     }
   };
-
-  const statusOptions = ["pending", "menunggu", "selesai", "batal"];
 
   const updateStatus = async (id: string, newStatus: string) => {
     try {
@@ -114,6 +120,18 @@ export function useAdminRiwayatTab() {
     }
   };
 
+  const openDetail = (p: Pesanan) => {
+    selectedPesanan.value = p;
+    showDetailModal.value = true;
+  };
+
+  const handleUpdate = () => {
+    loadRiwayat();
+    if (selectedPesanan.value) {
+      selectedPesanan.value = riwayat.value.find(r => r.id === selectedPesanan.value?.id) || null;
+    }
+  };
+
   onMounted(() => {
     loadRiwayat();
   });
@@ -127,5 +145,9 @@ export function useAdminRiwayatTab() {
     getStatusBadgeClass,
     statusOptions,
     updateStatus,
+    showDetailModal,
+    selectedPesanan,
+    openDetail,
+    handleUpdate,
   };
 }

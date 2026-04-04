@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import { useAdminRiwayatTab } from "../../composables/useAdminRiwayatTab";
+import OrderDetailModal from "../shared/OrderDetailModal.vue";
+import { usePosStore } from "../../stores/posStore";
+import { onMounted } from "vue";
 
 const p = useAdminRiwayatTab();
+const posStore = usePosStore();
+
+onMounted(() => {
+  posStore.fetchMenu();
+});
 </script>
 
 <template>
@@ -57,6 +65,7 @@ const p = useAdminRiwayatTab();
               <th class="px-6 py-4">Tipe Pemesanan</th>
               <th class="px-6 py-4 text-right">Total (Rp)</th>
               <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -109,6 +118,15 @@ const p = useAdminRiwayatTab();
                   </option>
                 </select>
               </td>
+              <td class="px-6 py-4 text-center">
+                <button
+                  @click="p.openDetail(r)"
+                  class="p-2 text-slate-400 hover:text-primary transition rounded-lg hover:bg-slate-100"
+                  title="Lihat Detail / Edit Item"
+                >
+                  <i class="bx bx-show text-xl"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -122,5 +140,13 @@ const p = useAdminRiwayatTab();
         </div>
       </div>
     </div>
+
+    <!-- Detail Modal (Shared) -->
+    <OrderDetailModal
+      :show="p.showDetailModal.value"
+      :pesanan="p.selectedPesanan.value"
+      @close="p.showDetailModal.value = false"
+      @updated="p.handleUpdate"
+    />
   </div>
 </template>

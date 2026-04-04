@@ -7,6 +7,9 @@ import type { User } from "@supabase/supabase-js";
 export interface UserProfile {
   role: "superadmin" | "admin" | "kasir" | string;
   id_toko?: string | null;
+  toko?: {
+    nama_toko: string;
+  } | null;
 }
 
 export const useAuthStore = defineStore("auth", () => {
@@ -19,7 +22,7 @@ export const useAuthStore = defineStore("auth", () => {
     if (user.value) {
       const { data: p, error } = await supabase
         .from("user_profiles")
-        .select("role,id_toko")
+        .select("role, id_toko, toko:id_toko(nama_toko)")
         .eq("id", user.value.id)
         .maybeSingle();
       if (error && error.code !== "PGRST116") {
